@@ -11,6 +11,9 @@ import {
 import { schema } from "./Validations/userValidations";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router";
+import { submitRegisterApi } from "./registerApi";
+import { Link } from "react-router-dom";
 
 const inputFieldStyle = {
   width: "300px",
@@ -250,9 +253,6 @@ const Register = () => {
             Sign in
           </Button>
 
-          <Typography variant="body1" textAlign={"center"}>
-            Already have an account? Login here
-          </Typography>
           {showErrorMsg && (
             <Typography variant="body2" color={"red"} textAlign={"center"}>
               {errorMsg}
