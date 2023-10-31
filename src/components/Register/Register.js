@@ -11,6 +11,9 @@ import {
 import { schema } from "./Validations/userValidations";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { submitRegisterApi } from "./registerApi";
 
 const inputFieldStyle = {
   width: "300px",
@@ -38,16 +41,6 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-
-  /* const handleConfirmPassword = (e) => {
-    const passwordCheck = e.target.value;
-    if (
-      passwordCheck.length === password.length &&
-      password === passwordCheck
-    ) {
-      console.log("Passwords matched");
-    }
-  }; */
 
   const errorMessageFunction = (message) => {
     setErrorMsg(message);
