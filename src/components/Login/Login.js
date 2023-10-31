@@ -25,10 +25,24 @@ const Login = () => {
     event.preventDefault();
   };
 
-  const loginClicked = (event) => {
+  const loginClicked = async (event) => {
     event.preventDefault();
     const loginDetails = { email, password };
+    console.log(loginDetails);
     //code to write
+    const url = "http://192.168.0.106:3005/api/login";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginDetails),
+    };
+    const response = await fetch(url, options);
+    const jsonData = await response.json();
+    console.log(response);
+    console.log(jsonData);
+
     //code to write
     setEmail("");
     setPassword("");
