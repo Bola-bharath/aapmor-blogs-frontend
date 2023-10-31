@@ -240,7 +240,7 @@ const Register = () => {
             }}
             type="submit"
           >
-            Sign in
+            Sign Up
           </Button>
 
           {showErrorMsg && (
