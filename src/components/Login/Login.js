@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 import {
   Grid,
   Paper,
@@ -14,30 +15,43 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
 import { loginValidation } from "./LoginFetch";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showErrMsg, setShowErrMsg] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const navigate = useNavigate();
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  const handleOnSubmitError = (message) => {
+    setShowErrMsg(true);
+    setErrorMsg(message);
+  };
+
   const loginClicked = async (event) => {
     event.preventDefault();
     const loginDetails = { email, password };
-    console.log(loginDetails);
     const response = await loginValidation(loginDetails);
-    //code to write
-
     console.log(response);
+    const data = response.data;
+    console.log(data);
 
-    //code to write
-    setEmail("");
-    setPassword("");
+    if (response.status === 200) {
+      const jwtToken = data.jwt_token;
+
+      Cookies.set("jwtToken", jwtToken);
+      navigate("/");
+    } else {
+      handleOnSubmitError(data.message);
+    }
   };
   return (
     <Grid
@@ -170,6 +184,11 @@ const Login = () => {
               Forget Password?
             </Typography>
           </Link>
+          {showErrMsg && (
+            <Typography variant="p" sx={{ color: "red", marginTop: 2 }}>
+              *{errorMsg}
+            </Typography>
+          )}
         </Grid>
         {/* Welcome Aapmor */}
         <Grid
