@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
-  Box,
+  Grid,
+  Paper,
   Button,
   FormControlLabel,
   Switch,
@@ -10,12 +11,15 @@ import {
 import { schema } from "./Validations/userValidations";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Link } from "react-router-dom";
 
 const inputFieldStyle = {
-  boxShadow: "5px 5px 6px 0px #B5BFC6 inset , -5px -5px 10px 5px #FAFBFF inset",
-  backgroundColor: "#EFF2F9",
-  borderRadius: "6px",
+  width: "300px",
+  margin: "5px",
+  borderRadius: "20px",
+  boxShadow: "inset 7px 2px 5px #babebc, inset -5px -5px 10px #ffffff",
   "& fieldset": { border: "none" },
+  backgroundColor: "#ebecf0",
 };
 
 const Register = () => {
@@ -57,68 +61,128 @@ const Register = () => {
   };
 
   return (
-    <Box
+    <Grid
+      container
       sx={{
         display: "flex",
-        flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        background:
-          "linear-gradient(133deg, #E4EBF1 0% , #E4EBF1 45%, #ffffff 45%, #ffffff 100%)",
+        backgroundImage: `url(${"https://wallpaperaccess.com/full/414633.jpg"})`,
+        backgroundSize: "cover",
+        fontFamily: "cambria Math",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          boxSizing: "border-box",
-          padding: 10,
-          alignItems: "center",
-          width: "65vw",
-          height: "80vh",
-          backgroundColor: "#E4EBF1", //6E7F8D
-          boxShadow: "0px 0px 16px 0px #bfbfbf",
-        }}
+      <Paper
+        elevation={5}
+        sx={{ borderRadius: "15px", height: "85%", display: "flex" }}
       >
-        <Box>
-          <img
-            src="https://res.cloudinary.com/saipraveen/image/upload/v1698663764/h7b07riiojvydifto8qw.png"
-            alt="register-logo"
-            style={{ width: "90%" }}
-          />
-        </Box>
-        <Box
+        {/* welcome Aapmor */}
+        <Grid
+          item
+          component="form"
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-around",
-            height: "70vh",
-            width: "50%",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "20px",
+            height: "100%",
+            backgroundColor: "#ff4b2b",
+            borderTopLeftRadius: "15px",
+            borderBottomLeftRadius: "15px",
+            color: "white",
+            width: "400px",
+          }}
+        >
+          <img
+            src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
+            alt="logoAapmor"
+          />
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{ fontFamily: "cambria Math" }}
+          >
+            Welcome Back
+          </Typography>
+
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontFamily: "cambria Math" }}
+          >
+            To keep connected with us, please Login with your personal info
+          </Typography>
+          <Link to="/login">
+            <Button
+              sx={{
+                borderRadius: "15px",
+                width: "150px",
+                margin: "5px",
+                marginTop: "10px",
+                boxShadow: "-5px -5px 10px #fa835f ,5px 5px 8px #b52e05",
+                "& fieldset": { border: "none" },
+                fontWeight: "bold",
+                color: "white",
+                fontFamily: "cambria Math",
+              }}
+            >
+              Login
+            </Button>
+          </Link>
+        </Grid>
+        <Grid
+          item
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "20px",
+            height: "100%",
+            borderTopRightRadius: "15px",
+            borderBottomRightRadius: "15px",
+            backgroundColor: "#ebecf0",
+            width: "400px",
           }}
           component="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Typography variant="h4" textAlign={"center"}>
-            Register Now!
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{ fontWeight: "bold", fontFamily: "cambria Math" }}
+          >
+            Create Account
           </Typography>
-
+          {/* first name */}
           <TextField
+            required
+            size="small"
+            id="firstName"
             placeholder="Enter your first name"
             {...register("firstname")}
             sx={inputFieldStyle}
             onChange={(e) => setFirstName(e.target.value)}
             helperText={errors?.firstname?.message}
           />
+          {/* second name */}
           <TextField
+            required
+            size="small"
+            id="secondName"
             placeholder="Enter your last name"
             {...register("lastname")}
             sx={inputFieldStyle}
             onChange={(e) => setLastName(e.target.value)}
             helperText={errors?.lastname?.message}
           />
+          {/* email input */}
           <TextField
+            required
+            size="small"
+            id="email"
             placeholder="Enter your email"
             type="email"
             {...register("email")}
@@ -126,7 +190,11 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)}
             helperText={errors?.email?.message}
           />
+          {/* password Input */}
           <TextField
+            required
+            size="small"
+            id="password"
             placeholder="Enter your password"
             {...register("password")}
             type="password"
@@ -134,7 +202,11 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             helperText={errors?.password?.message}
           />
+          {/* conform password */}
           <TextField
+            required
+            size="small"
+            id="conform Password"
             placeholder="Re-enter your password"
             {...register("confPassword")}
             type="password"
@@ -142,35 +214,37 @@ const Register = () => {
             onChange={(e) => setConfirmPass(e.target.value)}
             helperText={errors?.confPassword?.message}
           />
-
           <FormControlLabel
             control={<Switch />}
             label="I am AAPMOR employee"
+            sx={{ fontFamily: "cambria Math" }}
             onChange={(e) => setEmployee(e.target.checked)}
           />
           <Button
-            variant="contained"
             sx={{
-              height: "48px",
-              marginTop: 2,
-              backgroundColor: "#3226E5",
+              borderRadius: "15px",
+              width: "150px",
+              margin: "5px",
+              marginTop: "10px",
+              boxShadow: "-5px -5px 10px #ffffff ,5px 5px 8px #babebc",
+              "& fieldset": { border: "none" },
+              fontWeight: "bold",
+              color: "#595959",
+              fontFamily: "cambria Math",
             }}
             type="submit"
           >
             Sign in
           </Button>
 
-          <Typography variant="body1" textAlign={"center"}>
-            Already have an account? Login here
-          </Typography>
           {showErrorMsg && (
             <Typography variant="body2" color={"red"} textAlign={"center"}>
               {errorMsg}
             </Typography>
           )}
-        </Box>
-      </Box>
-    </Box>
+        </Grid>
+      </Paper>
+    </Grid>
   );
 };
 
