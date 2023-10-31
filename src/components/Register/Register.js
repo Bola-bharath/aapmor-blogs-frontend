@@ -7,6 +7,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { schema } from "./Validations/userValidations";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const inputFieldStyle = {
   boxShadow: "5px 5px 6px 0px #B5BFC6 inset , -5px -5px 10px 5px #FAFBFF inset",
@@ -15,7 +18,7 @@ const inputFieldStyle = {
   "& fieldset": { border: "none" },
 };
 
-const Register = (props) => {
+const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,18 +28,32 @@ const Register = (props) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
 
-  const handleConfirmPassword = (e) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
+  /* const handleConfirmPassword = (e) => {
     const passwordCheck = e.target.value;
     if (
       passwordCheck.length === password.length &&
       password === passwordCheck
     ) {
+      console.log("Passwords matched");
     }
-  };
+  }; */
 
-  const handleOnsubmitForm = (e) => {
-    e.preventDefault();
-    const userDetails = { firstname, lastname, email, password, isEmployee };
+  const onSubmit = async () => {
+    const userDetails = {
+      firstname,
+      lastname,
+      email,
+      password,
+      confPassword,
+      isEmployee,
+    };
+    console.log(userDetails);
   };
 
   return (
@@ -48,7 +65,7 @@ const Register = (props) => {
         alignItems: "center",
         height: "100vh",
         background:
-          "linear-gradient(133deg, #E4EBF1 0% , #E4EBF1 45%, #3226E5 44%, #3226E5 44.01%, #ffffff 46%, #ffffff 100%)",
+          "linear-gradient(133deg, #E4EBF1 0% , #E4EBF1 45%, #ffffff 45%, #ffffff 100%)",
       }}
     >
       <Box
@@ -64,7 +81,6 @@ const Register = (props) => {
           backgroundColor: "#E4EBF1", //6E7F8D
           boxShadow: "0px 0px 16px 0px #bfbfbf",
         }}
-        component={"form"}
       >
         <Box>
           <img
@@ -82,44 +98,49 @@ const Register = (props) => {
             width: "50%",
           }}
           component="form"
-          onSubmit={handleOnsubmitForm}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <Typography variant="h4" textAlign={"center"}>
             Register Now!
           </Typography>
 
           <TextField
-            required
             placeholder="Enter your first name"
+            {...register("firstname")}
             sx={inputFieldStyle}
             onChange={(e) => setFirstName(e.target.value)}
+            helperText={errors?.firstname?.message}
           />
           <TextField
-            required
             placeholder="Enter your last name"
+            {...register("lastname")}
             sx={inputFieldStyle}
             onChange={(e) => setLastName(e.target.value)}
+            helperText={errors?.lastname?.message}
           />
           <TextField
-            required
             placeholder="Enter your email"
             type="email"
+            {...register("email")}
             sx={inputFieldStyle}
             onChange={(e) => setEmail(e.target.value)}
+            helperText={errors?.email?.message}
           />
           <TextField
-            required
             placeholder="Enter your password"
+            {...register("password")}
             type="password"
             sx={inputFieldStyle}
             onChange={(e) => setPassword(e.target.value)}
+            helperText={errors?.password?.message}
           />
           <TextField
-            required
             placeholder="Re-enter your password"
+            {...register("confPassword")}
             type="password"
             sx={inputFieldStyle}
             onChange={(e) => setConfirmPass(e.target.value)}
+            helperText={errors?.confPassword?.message}
           />
 
           <FormControlLabel
@@ -142,9 +163,11 @@ const Register = (props) => {
           <Typography variant="body1" textAlign={"center"}>
             Already have an account? Login here
           </Typography>
-          <Typography variant="body2" color={"red"} textAlign={"center"}>
-            Error message
-          </Typography>
+          {showErrorMsg && (
+            <Typography variant="body2" color={"red"} textAlign={"center"}>
+              {errorMsg}
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>
