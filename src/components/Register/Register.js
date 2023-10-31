@@ -15,7 +15,7 @@ const inputFieldStyle = {
   "& fieldset": { border: "none" },
 };
 
-const Register = (props) => {
+const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
