@@ -3,6 +3,9 @@ import { useState } from "react";
 import axios from "axios";
 import { Grid, Typography, TextField, Paper, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../Register/Validations/userValidations";
 // import { schema } from "../Register/Validations/userValidations";
 
 const displayViews = {
@@ -18,10 +21,17 @@ const ForgetPassword = () => {
   const [responseOtp, setResponseOtp] = useState("");
   // const [showUpdatePassView, setShowUpdatePassView] = useState(false);
   const [updatePassword, setUpdatePassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   // const [showEmailInput, setShowEmailInput] = useState(false);
   const [displayView, setDisplayView] = useState(displayViews.emailView);
   const [isShowOtpText, setIsShowOtpText] = useState(false);
   console.log(responseOtp);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
   const handleForgetPassword = async () => {
     console.log(email);
@@ -82,6 +92,7 @@ const ForgetPassword = () => {
             backgroundColor: "#ebecf0",
             width: "400px",
           }}
+          onSubmit={handleSubmit(handleUpdatePassword)}
         >
           <Typography
             variant="h4"
@@ -94,6 +105,9 @@ const ForgetPassword = () => {
             required
             type="password"
             placeholder="New Password"
+            {...register("password")}
+            helperText={errors?.password?.message}
+            error={errors?.password}
             value={updatePassword}
             sx={{
               width: "300px",
@@ -110,7 +124,10 @@ const ForgetPassword = () => {
             required
             type="password"
             placeholder="Confirm Password"
-            value={updatePassword}
+            {...register("confPassword")}
+            helperText={errors?.confPassword?.message}
+            value={confirmPassword}
+            error={errors?.confPassword}
             sx={{
               width: "300px",
               margin: "5px",
@@ -120,7 +137,7 @@ const ForgetPassword = () => {
               "& fieldset": { border: "none" },
               backgroundColor: "#ebecf0",
             }}
-            onChange={(e) => setUpdatePassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <Button
             sx={{
@@ -134,7 +151,7 @@ const ForgetPassword = () => {
               color: "#595959",
               fontFamily: "cambria Math",
             }}
-            onClick={handleUpdatePassword}
+            type="submit"
           >
             Update
           </Button>
