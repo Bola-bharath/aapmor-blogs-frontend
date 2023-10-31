@@ -11,7 +11,6 @@ import {
 import { schema } from "./Validations/userValidations";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link } from "react-router-dom";
 
 const inputFieldStyle = {
   width: "300px",
@@ -32,6 +31,8 @@ const Register = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrorMsg, setShowErrorMsg] = useState(false);
 
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -48,6 +49,10 @@ const Register = () => {
     }
   }; */
 
+  const errorMessageFunction = (message) => {
+    setErrorMsg(message);
+    setShowErrorMsg(true);
+  };
   const onSubmit = async () => {
     const userDetails = {
       firstname,
@@ -58,6 +63,14 @@ const Register = () => {
       isEmployee,
     };
     console.log(userDetails);
+    const response = await submitRegisterApi(userDetails);
+    const data = response.data;
+    console.log(data);
+    if (response.status === 201) {
+      navigate("/login");
+    } else {
+      errorMessageFunction(data.message);
+    }
   };
 
   return (
@@ -237,6 +250,9 @@ const Register = () => {
             Sign in
           </Button>
 
+          <Typography variant="body1" textAlign={"center"}>
+            Already have an account? Login here
+          </Typography>
           {showErrorMsg && (
             <Typography variant="body2" color={"red"} textAlign={"center"}>
               {errorMsg}
