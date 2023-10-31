@@ -13,6 +13,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
+import { loginValidation } from "./LoginFetch";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -29,19 +30,10 @@ const Login = () => {
     event.preventDefault();
     const loginDetails = { email, password };
     console.log(loginDetails);
+    const response = await loginValidation(loginDetails);
     //code to write
-    const url = "http://192.168.0.106:3005/api/login";
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginDetails),
-    };
-    const response = await fetch(url, options);
-    const jsonData = await response.json();
+
     console.log(response);
-    console.log(jsonData);
 
     //code to write
     setEmail("");
