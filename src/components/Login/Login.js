@@ -14,7 +14,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
-import { loginValidation } from "./LoginFetch";
+import { loginValidation } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

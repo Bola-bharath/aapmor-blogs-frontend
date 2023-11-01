@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import axios from "axios";
 import { Grid, Typography, TextField, Paper, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { schema } from "../Register/Validations/userValidations";
+import { schema } from "../Validations/userValidations";
+import { forgetPasswordApi, updatePasswordApi } from "../ApiCalls/apiCalls";
 // import { schema } from "../Register/Validations/userValidations";
 
 const displayViews = {
@@ -19,13 +19,10 @@ const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [responseOtp, setResponseOtp] = useState("");
-  // const [showUpdatePassView, setShowUpdatePassView] = useState(false);
   const [updatePassword, setUpdatePassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [showEmailInput, setShowEmailInput] = useState(false);
   const [displayView, setDisplayView] = useState(displayViews.emailView);
   const [isShowOtpText, setIsShowOtpText] = useState(false);
-  console.log(responseOtp);
 
   const {
     register,
@@ -33,12 +30,11 @@ const ForgetPassword = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  // FORGET PASSWORD API VERIFY EMAIL IN DB
   const handleForgetPassword = async () => {
-    console.log(email);
-    const url = "http://localhost:3005/sendEmail";
-    const response = await axios.post(url, { email });
-    const data = await response.data;
-    if (response.statusText === "OK") {
+    const responseObj = await forgetPasswordApi({ email });
+    const data = await responseObj.data;
+    if (responseObj.statusText === "OK") {
       setIsShowOtpText(true);
       setResponseOtp(data.otp);
       setDisplayView(displayViews.otpView);
@@ -48,23 +44,22 @@ const ForgetPassword = () => {
     }
   };
 
+  // OTP CHECKING
   const handleVerifyOtp = () => {
     if (otp === responseOtp) {
       setDisplayView(displayViews.passwordView);
     }
   };
 
+  // UPDATING PASSWORD IN DATABASE
   const handleUpdatePassword = async () => {
-    const url = "http://localhost:3005/users/";
-    const response = await axios.put(url, { updatePassword, email });
-    const data = await response.data;
-    console.log(response);
-    console.log(data);
+    const response = await updatePasswordApi(updatePassword, email);
     if (response.status === 200) {
       navigate("/login");
     }
   };
 
+  // RENDERING PASSWORD VIEW
   const updatePasswordView = () => {
     return (
       <Grid
@@ -159,6 +154,8 @@ const ForgetPassword = () => {
       </Grid>
     );
   };
+
+  // RENDERING OTP ENTERING VIEW
   const renderOtpView = () => {
     return (
       <Grid
@@ -243,6 +240,8 @@ const ForgetPassword = () => {
       </Grid>
     );
   };
+
+  // RENDERING EMAIL VERIFICATION VIEW
   const renderEmailView = () => {
     return (
       <Grid
@@ -326,6 +325,8 @@ const ForgetPassword = () => {
       </Grid>
     );
   };
+
+  // RENDERING DIFFERENT VIEWS
   const renderRequiredView = () => {
     switch (displayView) {
       case "EMAIL":
