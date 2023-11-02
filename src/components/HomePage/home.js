@@ -22,7 +22,9 @@ const Home = (props) => {
   }, []);
 
   const getBlogsData = async () => {
-    const response = await axios.get("http://localhost:3005/blogs");
+    const response = await axios.get(
+      `http://localhost:3005/blogs/filter/?category=${category}`
+    );
     console.log(response.data);
     setBlogs(response.data);
   };
