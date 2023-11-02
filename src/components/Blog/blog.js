@@ -23,7 +23,7 @@ const Blog = (blogDetails) => {
     _id,
   } = blogDetails;
   return (
-    <Box>
+    <Box bgcolor={"background.default"} color={"text.primary"}>
       <Card sx={{ maxWidth: 345 }}>
         <CardHeader
           avatar={
