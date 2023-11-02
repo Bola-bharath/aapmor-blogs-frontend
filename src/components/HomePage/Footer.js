@@ -11,9 +11,7 @@ const Footer = () => {
         bottom: 0,
         backgroundColor: "#D2EDFF",
       }} */
-    >
-      <h1>Footer</h1>
-    </Box>
+    ></Box>
   );
 };
 
