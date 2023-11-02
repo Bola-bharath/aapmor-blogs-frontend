@@ -140,6 +140,7 @@ const Home = (props) => {
             display: "flex",
             justifyContent: "center",
             width: "100%",
+            padding: "20px",
           }}
         >
           <Grid

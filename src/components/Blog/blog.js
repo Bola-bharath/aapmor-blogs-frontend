@@ -26,6 +26,7 @@ const Blog = (blogDetails) => {
     username,
     userrole,
     _id,
+    blogImage,
   } = blogDetails.blogDetails;
   return (
     <Box bgcolor={"background.default"} color={"text.primary"}>
@@ -42,7 +43,7 @@ const Blog = (blogDetails) => {
         <Box
           sx={{
             backgroundImage: `url(
-              "https://images.freeimages.com/variants/2kqnXDhNwJR2Us1oQgfU7E9N/f4a36f6589a0e50e702740b15352bc00e4bfaf6f58bd4db850e167794d05993d"
+              ${blogImage}
             )`,
             backgroundSize: "cover",
             height: 200,
