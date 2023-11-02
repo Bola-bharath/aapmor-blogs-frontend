@@ -17,6 +17,7 @@ const Footer = () => {
         justifyContent: "space-evenly",
         paddingTop: "20px",
         paddingBottom: "10px",
+        bottom: "100px",
       }}
     >
       <Grid item xs={2}>

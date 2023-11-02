@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { changeTheme } from "../slices/DarkLightThemeSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 50,
@@ -59,8 +61,14 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const Header = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const themeObj = useSelector((state) => state.navbar);
+
+  const handleLogout = () => {
+    Cookies.remove("jwtToken");
+    navigate("/login");
+  };
 
   return (
     <AppBar position="static">
@@ -86,6 +94,7 @@ const Header = () => {
             margin: "6px",
             width: "100px",
           }}
+          onClick={handleLogout}
         >
           Logout
         </Button>
