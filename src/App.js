@@ -17,5 +17,5 @@ const App = () => {
     </Provider>
   );
 };
-
+//APP MODIFIED
 export default App;
