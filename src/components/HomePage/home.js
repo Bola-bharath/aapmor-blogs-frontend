@@ -49,18 +49,7 @@ const Home = (props) => {
   }, [category]);
 
   return (
-<<<<<<< HEAD
     <ThemeProvider theme={darkTheme}>
-      <div>
-        <Header />
-        {blogs.map((blogItem) => {
-          return <Blog blogDetails={blogItem} key={blogItem._id} />;
-        })}
-        <Footer />
-      </div>
-    </ThemeProvider>
-=======
-    <div>
       <Header />
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         {/* <SideBar /> */}
@@ -173,8 +162,7 @@ const Home = (props) => {
       </Box>
       <Footer />
       <Add />
-    </div>
->>>>>>> 05c801e0a7968c624478ec8e771be318b6296770
+    </ThemeProvider>
   );
 };
 
