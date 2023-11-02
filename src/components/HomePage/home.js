@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import Blog from "../Blog/blog";
 import axios from "axios";
 
-const Home = (props) => {
+const Home = () => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const Home = (props) => {
   }, []);
 
   const getBlogsData = async () => {
-    const response = await axios.get("http://localhost:3005/blogs");
+    const response = await axios.get("http://192.168.0.106:3005/blogs");
     console.log(response.data);
     setBlogs(response.data);
   };

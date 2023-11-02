@@ -1,8 +1,6 @@
 import {
-  Avatar,
   Box,
   Button,
-  IconButton,
   Modal,
   TextField,
   Typography,

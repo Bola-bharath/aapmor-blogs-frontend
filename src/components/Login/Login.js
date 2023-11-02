@@ -61,6 +61,13 @@ const Login = () => {
   useEffect(() => {
     checkEmailValidation();
   }, [email]);
+  const checkEmailValidation = () => {
+    if (email.endsWith("@aapmor.com")) {
+      setButtonDisable(false);
+    } else {
+      setButtonDisable(true);
+    }
+  };
 
   useEffect(() => {
     checkOtpValidation();
@@ -71,14 +78,6 @@ const Login = () => {
       setOtpButtonDisable(false);
     } else {
       setOtpButtonDisable(true);
-    }
-  };
-
-  const checkEmailValidation = () => {
-    if (email.endsWith("@aapmor.com")) {
-      setButtonDisable(false);
-    } else {
-      setButtonDisable(true);
     }
   };
 
