@@ -4,6 +4,7 @@ import {
   // updatePassUrl,
   forgetPassUrl,
   loginApiUrl,
+  createBlogApiUrl,
 } from "../Url/configUrls";
 
 export const sendOtpApi = async (email) => {
@@ -23,5 +24,9 @@ export const loginValidation = async (loginDetails) => {
 };
 export const submitRegisterApi = async (userDetails) => {
   const response = await axios.post(registerApiUrl, userDetails);
+  return response;
+};
+export const createBlogApi = async (blogDetails) => {
+  const response = await axios.post(createBlogApiUrl, blogDetails);
   return response;
 };
