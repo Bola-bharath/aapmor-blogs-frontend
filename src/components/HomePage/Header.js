@@ -1,11 +1,21 @@
 import React from "react";
 import { AppBar, Button } from "@mui/material";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const token = Cookies.get("jwtToken");
+
+  const handleLogoutClick = () => {
+    Cookies.remove("jwtToken");
+    navigate("/login");
+  };
+
   return (
     <AppBar
       sx={{
-        backgroundColor: "#03b6fc",
+        backgroundColor: "#E4F4FF",
         height: "70px",
         color: "white",
         display: "flex",
@@ -13,6 +23,7 @@ const Header = () => {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "10px",
+        position: "static",
       }}
     >
       <img
@@ -21,21 +32,23 @@ const Header = () => {
         src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
         alt="logoAapmor"
       />
-
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: "#03b6fc",
-          borderRadius: "15px",
-          boxShadow: "-5px -5px 10px #79d3f7 ,5px 5px 8px #012e40",
-          "& fieldset": { border: "none" },
-          fontWeight: "bold",
-          color: "black",
-          fontFamily: "cambria Math",
-        }}
-      >
-        Logout
-      </Button>
+      {token !== undefined ? (
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#000EE6", width: "140px" }}
+          onClick={handleLogoutClick}
+        >
+          Logout
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#000EE6", width: "140px" }}
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </Button>
+      )}
     </AppBar>
   );
 };

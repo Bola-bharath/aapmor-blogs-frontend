@@ -1,58 +1,124 @@
-import React, { useState } from "react";
+//IMPORTS
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
   Grid,
   Paper,
   TextField,
-  IconButton,
-  OutlinedInput,
-  InputAdornment,
-  FormControl,
   Button,
   Typography,
+  Stack,
+  Divider,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { Link } from "react-router-dom";
-import { loginValidation } from "../ApiCalls/apiCalls";
+import { sendOtpApi, loginValidation } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
+import { schema } from "../Validations/userValidations";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
+//MAIN FUNCTION
 const Login = () => {
+  //STATE HOOKS
+  const [buttonText, setButtonText] = useState("Get OTP");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrMsg, setShowErrMsg] = useState(false);
+  const [showOtpView, setShowOtpView] = useState(false);
+  const [showEmailView, setShowEmailView] = useState(true);
+  const [otp, setOtp] = useState("");
+  const [responseOtp, setResponseOtp] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [isButtonDisable, setButtonDisable] = useState(true);
+  const [isOtpButtonDisable, setOtpButtonDisable] = useState(true);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
+  //CHECKING FOR ALREADY REGISTERED USER AND NAVIGATING TO HOME
   const navigate = useNavigate();
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  useEffect(() => {
+    const token = Cookies.get("jwtToken");
+    if (token !== undefined) {
+      navigate("/");
+    }
+  });
 
   const handleOnSubmitError = (message) => {
     setShowErrMsg(true);
     setErrorMsg(message);
   };
 
-  const loginClicked = async (event) => {
+  const handleEmailChange = (e) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    setEmail(e.target.value);
+    const isValidEmail = emailRegex.test(email);
+    console.log(isValidEmail);
+  };
+
+  useEffect(() => {
+    checkEmailValidation();
+  }, [email]);
+
+  useEffect(() => {
+    checkOtpValidation();
+  }, [otp]);
+
+  const checkOtpValidation = () => {
+    if (otp.length === 6) {
+      setOtpButtonDisable(false);
+    } else {
+      setOtpButtonDisable(true);
+    }
+  };
+
+  const checkEmailValidation = () => {
+    if (email.endsWith("@aapmor.com")) {
+      setButtonDisable(false);
+    } else {
+      setButtonDisable(true);
+    }
+  };
+
+  // OTP ENTERED API CALL
+  const handleOtpEntered = async () => {
+    setButtonText("Validating...");
+    if (otp === responseOtp) {
+      const loginDetails = { email };
+      const response = await loginValidation(loginDetails);
+      const data = response.data;
+      if (response.status === 200) {
+        setButtonText("Success");
+        const jwtToken = data.jwt_token;
+        Cookies.set("jwtToken", jwtToken);
+        navigate("/");
+      } else {
+        handleOnSubmitError(data.message);
+      }
+    }
+  };
+
+  // EMAIL VERIFICATION API CALL
+  const onSubmitEmail = async (event) => {
     event.preventDefault();
-    const loginDetails = { email, password };
-    const response = await loginValidation(loginDetails);
-    console.log(response);
+    setButtonText("sending...");
+    const response = await sendOtpApi(email);
     const data = response.data;
-    console.log(data);
+    setSuccessMsg(data.message);
+    setResponseOtp(data.otp);
 
     if (response.status === 200) {
-      const jwtToken = data.jwt_token;
-
-      Cookies.set("jwtToken", jwtToken);
-      navigate("/");
+      setButtonText("Enter OTP");
+      setShowEmailView(false);
+      setShowOtpView(true);
     } else {
       handleOnSubmitError(data.message);
     }
   };
+
+  //RETURN
   return (
     <Grid
       container
@@ -61,14 +127,16 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        fontFamily: "sans-serif",
-        backgroundImage: `url(${"https://wallpaperaccess.com/full/414633.jpg"})`,
-        backgroundSize: "cover",
+        backgroundColor: "#E4F4FF",
       }}
     >
       <Paper
         elevation={5}
-        sx={{ borderRadius: "15px", height: "85%", display: "flex" }}
+        sx={{
+          borderRadius: "15px",
+          height: { xs: "70%", lg: "80%" },
+          width: { xs: "100%", md: "70%", lg: "50%" },
+        }}
       >
         {/* Login */}
         <Grid
@@ -77,173 +145,124 @@ const Login = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: { lg: "space-evenly", xs: "center" },
             alignItems: "center",
             padding: "20px",
             height: "100%",
             borderTopLeftRadius: "15px",
             borderBottomLeftRadius: "15px",
-            backgroundColor: "#ebecf0",
-            width: "350px",
+            width: "100%",
           }}
+          onSubmit={onSubmitEmail}
         >
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{ fontFamily: "cambria Math" }}
-          >
-            Login
-          </Typography>
-          {/* email Input */}
-          <TextField
-            required
-            id="email"
-            placeholder="Email"
-            onChange={(event) => setEmail(event.target.value)}
-            value={email}
-            sx={{
-              width: "250px",
-              margin: "5px",
-              borderRadius: "20px",
-              boxShadow:
-                "inset 7px 2px 5px #babebc, inset -5px -5px 10px #ffffff",
-              "& fieldset": { border: "none" },
-              backgroundColor: "#ebecf0",
-            }}
-          />
-          {/* input Password */}
-          <FormControl
-            sx={{
-              width: "250px",
-              margin: "5px",
-              borderRadius: "20px",
-              boxShadow:
-                "inset 7px 2px 5px #babebc , inset -5px -5px 10px #ffffff",
-              "& fieldset": { border: "none" },
-              backgroundColor: "#ebecf0",
-            }}
-          >
-            <OutlinedInput
-              required
-              id="password"
-              placeholder="Password"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
+          <Stack direction={"row"} spacing={2} alignItems="center">
+            <img
+              src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
+              alt="logoAapmor"
+              style={{ width: { xs: "50%", lg: "100%" } }}
             />
-          </FormControl>
-          {/* Login Button */}
-          <Button
-            sx={{
-              borderRadius: "15px",
-              width: "150px",
-              margin: "5px",
-              marginTop: "10px",
-              boxShadow: "-5px -5px 10px #ffffff ,5px 5px 8px #babebc",
-              "& fieldset": { border: "none" },
-              fontWeight: "bold",
-              color: "#595959",
-              fontFamily: "cambria Math",
-            }}
-            type="submit"
-            onClick={loginClicked}
-          >
-            Login
-          </Button>
-          <Link
-            to="/forgetPassword"
-            sx={{ textDecoration: "none" }}
-            underline="none"
-          >
-            <Typography
-              variant="caption"
-              gutterBottom
-              underline="none"
+            <Divider
+              orientation="vertical"
+              flexItem
               sx={{
-                margin: "5px",
-                color: "red",
-                cursor: "pointer",
-                outline: "none",
-                textDecoration: "none",
-                fontFamily: "cambria Math",
-                alignContent: "flex-start",
+                borderRightWidth: 5,
+                borderColor: "#000EE6",
+                height: "100px",
+                alignSelf: "center",
               }}
-            >
-              Forget Password?
+            />
+            <Typography variant="h3" color={"#2C007E"}>
+              BLOGS
             </Typography>
-          </Link>
-          {showErrMsg && (
-            <Typography variant="p" sx={{ color: "red", marginTop: 2 }}>
-              *{errorMsg}
-            </Typography>
-          )}
-        </Grid>
-        {/* Welcome Aapmor */}
-        <Grid
-          item
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "20px",
-            height: "100%",
-            backgroundColor: "#ff4b2b",
-            borderTopRightRadius: "15px",
-            borderBottomRightRadius: "15px",
-            color: "white",
-            width: "350px",
-          }}
-        >
-          <img
-            src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
-            alt="logoAapmor"
-          />
+          </Stack>
+          <Typography variant="body1" textAlign={"center"} width={400}>
+            Explore, engage, and be inspired. Dive into a world of captivating
+            content. Let's get started!
+          </Typography>
           <Typography
             variant="h4"
             gutterBottom
             sx={{ fontFamily: "cambria Math" }}
           >
-            Welcome to Aapmor
+            Login / Signup
           </Typography>
-          <Typography
-            variant="h6"
-            gutterBottom
-            sx={{ fontFamily: "cambria Math" }}
-          >
-            Enter your personal Details and start Journey with us
-          </Typography>
-          <Link to="/register">
-            <Button
+          {/* email Input */}
+          {showEmailView && (
+            <TextField
+              variant="outlined"
+              required
+              label="Email"
+              id="email"
+              {...register("email")}
+              error={errors?.email}
+              helperText={errors?.mail?.message}
+              placeholder="Enter Aapmor email id"
+              onChange={handleEmailChange}
+              value={email}
               sx={{
-                borderRadius: "15px",
-                width: "150px",
-                margin: "5px",
-                marginTop: "10px",
-                boxShadow: "-5px -5px 10px #fa835f ,5px 5px 8px #b52e05",
-                "& fieldset": { border: "none" },
-                fontWeight: "bold",
-                color: "white",
-                marginBottom: "140px",
-                fontFamily: "cambria Math",
+                width: { xs: "90%", lg: "60%" },
+                marginBottom: { xs: "30px", lg: "0px" },
+              }}
+            />
+          )}
+          {showOtpView && (
+            <TextField
+              variant="outlined"
+              required
+              label="OTP"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(event) => setOtp(event.target.value)}
+              sx={{
+                width: { xs: "90%", lg: "60%" },
+                marginBottom: { xs: "30px", lg: "0px" },
+              }}
+            />
+          )}
+          {/* EMAIL SEND BUTTON */}
+          {showEmailView && (
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isButtonDisable}
+              sx={{
+                width: { xs: "90%", lg: "60%" },
+                height: "48px",
+                marginBottom: { xs: "30px", lg: "0px" },
+                fontWeight: 500,
               }}
             >
-              SignUp
+              {buttonText}
             </Button>
-          </Link>
+          )}
+          {/*  OTP BUTTON */}
+          {showOtpView && (
+            <Button
+              variant="contained"
+              sx={{
+                width: { xs: "90%", lg: "60%" },
+                height: "48px",
+                marginBottom: { xs: "30px", lg: "0px" },
+              }}
+              onClick={handleOtpEntered}
+              disabled={isOtpButtonDisable}
+            >
+              {buttonText}
+            </Button>
+          )}
+          {showErrMsg && (
+            <Typography variant="p" sx={{ color: "red", marginTop: 2 }}>
+              *{errorMsg}
+            </Typography>
+          )}
+          {successMsg !== "" && (
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "green", marginTop: 2 }}
+            >
+              {successMsg}
+            </Typography>
+          )}
         </Grid>
       </Paper>
     </Grid>
