@@ -6,16 +6,15 @@ import {
   Button,
   Grid,
   Switch,
+  CssBaseline,
+  Box,
   FormControlLabel,
-  Toolbar,
 } from "@mui/material";
-import { changeTheme } from "../slices/DarkLightThemeSlice";
-import { useDispatch, useSelector } from "react-redux";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 50,
   height: 26,
-  padding: 7,
+  padding: 6,
   "& .MuiSwitch-switchBase": {
     margin: 1,
     padding: 0,
@@ -24,7 +23,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       color: "#fff",
       transform: "translateX(22px)",
       "& .MuiSwitch-thumb:before": {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="15" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
           "#fff"
         )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
       },
@@ -36,7 +35,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     backgroundColor: theme.palette.mode === "dark" ? "#003892" : "#001e3c",
-    width: 22,
+    width: 24,
     height: 24,
     "&:before": {
       content: "''",
@@ -59,76 +58,63 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const navThemeLight = createTheme({
-  palette: {
-    background: {
-      default: "red",
+const Header = ({ navLinks }) => {
+  const [mode, setMode] = useState("light");
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode,
     },
-  },
-});
-
-const navThemeDark = createTheme({
-  palette: {
-    background: {
-      default: "#3d3d3d",
-    },
-    text: {
-      primary: "#eeeeee",
-    },
-  },
-});
-
-const Header = () => {
-  const dispatch = useDispatch();
-  const themeObj = useSelector((state) => state.navbar);
+  });
 
   return (
-    <AppBar position="static">
-      <Toolbar
-        bgcolor={"background.default"}
-        color={"text.primary"}
-        sx={{
-          color: "white",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          xs={1}
-          variant="contained"
-          sx={{
-            backgroundColor: "#b1cbfc",
-            borderRadius: "4px",
-            color: "black",
-            fontFamily: "cambria Math",
-            margin: "6px",
-            width: "100px",
-          }}
-        >
-          Logout
-        </Button>
-        <Grid item xs={1}>
-          <img
-            height="70px"
-            width="70px"
-            src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
-            alt="logoAapmor"
-          />
-        </Grid>
-        <Grid>
-          <FormControlLabel
-            control={<MaterialUISwitch />}
-            onChange={() =>
-              dispatch(
-                changeTheme(themeObj.mode === "light" ? "dark" : "light")
-              )
-            }
-          />
-        </Grid>
-      </Toolbar>
-    </AppBar>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box bgcolor={"background.default"} color={"text.primary"}>
+        <AppBar position="static">
+          <Grid
+            container
+            bgcolor={"background.default"}
+            color={"text.primary"}
+            sx={{
+              color: "white",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              xs={1}
+              variant="contained"
+              sx={{
+                backgroundColor: "#b1cbfc",
+                borderRadius: "10px",
+                color: "black",
+                fontFamily: "cambria Math",
+                margin: "6px",
+                width: "100px",
+              }}
+            >
+              Logout
+            </Button>
+            <Grid item xs={1}>
+              <img
+                height="70px"
+                width="70px"
+                src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
+                alt="logoAapmor"
+              />
+            </Grid>
+            <Grid>
+              <FormControlLabel
+                control={<MaterialUISwitch />}
+                onChange={() => setMode(mode === "light" ? "dark" : "light")}
+              />
+            </Grid>
+          </Grid>
+        </AppBar>
+      </Box>
+    </ThemeProvider>
   );
 };
 
