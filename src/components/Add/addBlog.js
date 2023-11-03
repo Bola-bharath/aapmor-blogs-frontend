@@ -29,7 +29,6 @@ const Add = (props) => {
     >
       <Fab
         variant="extended"
-        c
         onClick={() => navigate("/createblog")}
         bgcolor={"background.default"}
         color={"text.primary"}
