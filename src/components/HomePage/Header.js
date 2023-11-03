@@ -98,7 +98,7 @@ const Header = () => {
         >
           Logout
         </Button>
-        <Grid item xs={1}>
+        <Grid item xs={1} component="a" href="/">
           <img
             height="70px"
             width="70px"

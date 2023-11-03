@@ -27,6 +27,12 @@ const CreateBlog = () => {
     const base64 = await convertToBase64(file);
     setImage(base64);
   };
+
+  const newDate = new Date();
+  const dateObject = `${newDate.getDate()} ${newDate.toLocaleString("default", {
+    month: "short",
+  })}, ${newDate.getFullYear()}`;
+
   const submitPost = async () => {
     const blogDetails = {
       title,
@@ -35,7 +41,7 @@ const CreateBlog = () => {
       username,
       userrole,
       blogImage: image,
-      date: new Date(),
+      date: dateObject,
       likes: 5,
       comments: [],
     };
@@ -76,7 +82,7 @@ const CreateBlog = () => {
           color={"text.primary"}
           p={3}
         >
-          <Typography variant="h6">Create Post</Typography>
+          <Typography variant="h6">Create Blog</Typography>
           <TextField
             variant="standard"
             placeholder="Title"
@@ -133,7 +139,7 @@ const CreateBlog = () => {
               margin="normal"
             />
             <Button variant="outlined" onClick={submitPost}>
-              Post
+              Publish
             </Button>
           </Box>
         </Box>
