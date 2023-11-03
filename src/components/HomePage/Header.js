@@ -65,6 +65,46 @@ const Header = () => {
   const dispatch = useDispatch();
   const themeObj = useSelector((state) => state.navbar);
 
+  const loginLogoutButton = () => {
+    if (Cookies.get("jwtToken") !== undefined) {
+      return (
+        <Button
+          xs={1}
+          variant="contained"
+          sx={{
+            backgroundColor: "#b1cbfc",
+            borderRadius: "4px",
+            color: "black",
+            fontFamily: "cambria Math",
+            margin: "6px",
+            width: "100px",
+          }}
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          xs={1}
+          variant="contained"
+          sx={{
+            backgroundColor: "#b1cbfc",
+            borderRadius: "4px",
+            color: "black",
+            fontFamily: "cambria Math",
+            margin: "6px",
+            width: "100px",
+          }}
+          onClick={handleLogout}
+        >
+          Login
+        </Button>
+      );
+    }
+  };
+
   const handleLogout = () => {
     Cookies.remove("jwtToken");
     navigate("/login");
@@ -83,22 +123,8 @@ const Header = () => {
           alignItems: "center",
         }}
       >
-        <Button
-          xs={1}
-          variant="contained"
-          sx={{
-            backgroundColor: "#b1cbfc",
-            borderRadius: "4px",
-            color: "black",
-            fontFamily: "cambria Math",
-            margin: "6px",
-            width: "100px",
-          }}
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
-        <Grid item xs={1} component="a" href="/">
+        {loginLogoutButton()}
+        <Grid item xs={1}>
           <img
             height="70px"
             width="70px"
