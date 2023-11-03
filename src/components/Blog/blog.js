@@ -10,8 +10,13 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+
+import { saveBlogsApi } from "../ApiCalls/apiCalls";
+
+import Cookies from "js-cookie";
 import React from "react";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import axios from "axios";
 
 const Blog = (blogDetails) => {
   console.log(blogDetails);
@@ -28,6 +33,23 @@ const Blog = (blogDetails) => {
     _id,
     blogImage,
   } = blogDetails.blogDetails;
+
+  const token = Cookies.get("jwtToken");
+  let saveIcon = "";
+
+  if (token !== undefined) {
+    saveIcon = "visible";
+  } else {
+    saveIcon = "none";
+  }
+
+  // const savedBlogs = async (email) => {
+  //   const response = await axios.get(saveBlogsApi, { email });
+  //   const num = response.data;
+
+  //   console.log(num);
+  // };
+
   return (
     <Box bgcolor={"background.default"} color={"text.primary"}>
       <Card sx={{ maxWidth: 345 }}>
@@ -87,7 +109,7 @@ const Blog = (blogDetails) => {
           }}
         >
           <Button variant="text">Read More...</Button>
-          <IconButton>
+          <IconButton sx={{ display: `${saveIcon}` }}>
             <BookmarkBorderIcon />
           </IconButton>
         </CardActions>
