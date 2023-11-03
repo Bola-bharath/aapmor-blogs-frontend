@@ -51,13 +51,16 @@ const Home = (props) => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Header />
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column" }}
+        bgcolor={"background.default"}
+        color={"text.primary"}
+      >
         {/* <SideBar /> */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            backgroundColor: "#D2EDFF",
             padding: 1.5,
             gap: 4,
             flexWrap: "nowrap",
@@ -68,6 +71,8 @@ const Home = (props) => {
             top: "0px",
             zIndex: 1,
           }}
+          bgcolor={"background.default"}
+          color={"text.primary"}
           onClick={handleClick}
         >
           <ChipStyled

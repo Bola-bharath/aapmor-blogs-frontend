@@ -10,8 +10,9 @@ const Add = (props) => {
     <Box sx={{ position: "fixed", bottom: "50px", left: "calc(100% - 230px)" }}>
       <Fab
         variant="extended"
-        color="primary"
         onClick={() => navigate("/createblog")}
+        bgcolor={"background.default"}
+        color={"text.primary"}
       >
         <CreateIcon sx={{ mr: 1 }} />
         Create Blog
