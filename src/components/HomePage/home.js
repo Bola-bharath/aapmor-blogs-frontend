@@ -86,7 +86,6 @@ const Home = (props) => {
       const checkProfileDetails = async () => {
         const emailObj = { email };
         const response = await profileCheckingApi(emailObj);
-        console.log(response.status);
         if (response.status === 202) {
           setProfile(true);
         } else if (response.status === 200) {
