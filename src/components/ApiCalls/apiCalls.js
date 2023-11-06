@@ -6,7 +6,10 @@ import {
   loginApiUrl,
   createBlogApiUrl,
   saveBlogsApiUrl,
+  profileUpdateApiUrl,
 } from "../Url/configUrls";
+import Cookies from "js-cookie";
+const token = Cookies.get("jwtToken");
 
 export const sendOtpApi = async (email) => {
   const response = await axios.post(forgetPassUrl, { email });
@@ -44,5 +47,45 @@ export const getBlogViewApi = async (id) => {
 
 export const saveBlogsApi = async (saveDetails) => {
   const response = await axios.post(saveBlogsApiUrl, saveDetails);
+  return response;
+};
+export const profileUpdateApi = async (profileDetails) => {
+  const response = await axios.post(profileUpdateApiUrl, profileDetails);
+  return response;
+};
+
+export const profileCheckingApi = async (emailObj) => {
+  // const response = await axios.post(
+  //   "http://192.168.0.103:3005/profile/check",
+  //   emailObj
+  // );
+  // console.log(response);
+
+  const options = {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(emailObj),
+  };
+
+  const response = await fetch(
+    "http://192.168.0.103:3005/profile/check",
+    options
+  );
+
+  return response;
+};
+export const commentsApi = async (commentObject) => {
+  const config = {
+    method: "post",
+    url: "http://192.168.0.103:3005/comments",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: commentObject,
+  };
+  const response = await axios(config);
   return response;
 };
