@@ -7,14 +7,24 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Chip,
+  Divider,
   IconButton,
   Typography,
 } from "@mui/material";
+
+import { saveBlogsApi } from "../ApiCalls/apiCalls";
+
+import Cookies from "js-cookie";
 import React from "react";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setBlogViewObj } from "../Slices/blogSlice";
 
 const Blog = (blogDetails) => {
-  console.log(blogDetails);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     category,
     comments,
@@ -28,71 +38,105 @@ const Blog = (blogDetails) => {
     _id,
     blogImage,
   } = blogDetails.blogDetails;
+
+  const handleReadMore = () => {
+    dispatch(setBlogViewObj(blogDetails));
+    navigate(`/blogs/${_id}`);
+  };
   return (
-    <Box bgcolor={"background.default"} color={"text.primary"}>
-      <Card sx={{ maxWidth: 345 }}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: "red" }} aria-label="profile-image">
-              {username.slice(0, 1)}
-            </Avatar>
-          }
-          title={username}
-          subheader={date}
+    <Card
+      sx={{
+        height: "max-content",
+        width: 250,
+        "&:hover": {
+          boxShadow: "0px 0px 10px 0px #00000050 inset",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          backgroundImage: `url(
+              ${blogImage}
+            )`,
+          backgroundSize: "cover",
+          height: 120,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Chip
+          label={category}
+          size="small"
+          sx={{
+            justifySelf: "flex-start",
+            alignSelf: "flex-end",
+            m: "4px 4px 0px 0px",
+            backgroundColor: "#00000090",
+            fontSize: "10px",
+            color: "#ffffff",
+          }}
         />
         <Box
           sx={{
-            backgroundImage: `url(
-              ${blogImage}
-            )`,
-            backgroundSize: "cover",
-            height: 200,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
+            background: "linear-gradient(to top, #000000, #00000002 )",
+            paddingLeft: 1,
+            boxSizing: "border-box",
           }}
         >
-          {/* <Box
-            sx={{
-              background:
-                "linearGradient(195deg, #ffffff 32.93%, #ffffff 89.72%)",
-            }}
+          <Typography variant="subtitle2" color={"#ffffff"}>
+            {username}
+          </Typography>
+          <Typography
+            variant="caption"
+            color={"lightgray"}
+            sx={{ display: "flow" }}
           >
-            <Typography>{username}</Typography>
-            <Typography>{userrole}</Typography>
-          </Box> */}
+            {userrole}
+          </Typography>
         </Box>
-        {/* <CardMedia
-          sx={{ height: 200, width: 345 }}
-          image="https://images.freeimages.com/variants/2kqnXDhNwJR2Us1oQgfU7E9N/f4a36f6589a0e50e702740b15352bc00e4bfaf6f58bd4db850e167794d05993d"
-          title="blog image"
-        /> */}
+      </Box>
+      <Box
+        sx={{
+          pl: 1,
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 100,
+        }}
+      >
+        <Typography variant="caption" color={"grey"} fontSize={"10px"}>
+          Posted at {date}
+        </Typography>
+        <Typography variant="p" fontWeight={700}>
+          {title.slice(0, 50)}
+        </Typography>
+        <Typography variant="caption" color={"grey"}>
+          {description.slice(0, 60)}...
+        </Typography>
+      </Box>
+      <Divider flexItem orientation="horizontal" />
 
-        <CardContent>
-          <Typography variant="body2" color={"#D3D3D3"}>
-            {category}
-          </Typography>
-          <Typography variant="h6" fontWeight={700}>
-            {title}
-          </Typography>
-          <Typography variant="body1">
-            {description.slice(0, 100)}...
-          </Typography>
-        </CardContent>
-        <CardActions
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Button variant="text">Read More...</Button>
-          <IconButton>
-            <BookmarkBorderIcon />
-          </IconButton>
-        </CardActions>
-      </Card>
-    </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "max-content",
+          padding: "0px 10px",
+          alignSelf: "flex-end",
+          cursor: "pointer",
+          "&:hover": {
+            color: "#e65100",
+          },
+        }}
+      >
+        <Typography variant="body2">Read more</Typography>
+        <IconButton>
+          <ArrowForwardIcon />
+        </IconButton>
+      </Box>
+    </Card>
   );
 };
 

@@ -5,6 +5,7 @@ import {
   forgetPassUrl,
   loginApiUrl,
   createBlogApiUrl,
+  saveBlogsApiUrl,
 } from "../Url/configUrls";
 
 export const sendOtpApi = async (email) => {
@@ -28,5 +29,20 @@ export const submitRegisterApi = async (userDetails) => {
 };
 export const createBlogApi = async (blogDetails) => {
   const response = await axios.post(createBlogApiUrl, blogDetails);
+  return response;
+};
+export const getBlogsApi = async (category) => {
+  const response = await axios.get(
+    `http://localhost:3005/blogs/filter/?category=${category}`
+  );
+  return response;
+};
+export const getBlogViewApi = async (id) => {
+  const response = await axios.get(`http://localhost:3005/blogs/${id}`);
+  return response;
+};
+
+export const saveBlogsApi = async (saveDetails) => {
+  const response = await axios.post(saveBlogsApiUrl, saveDetails);
   return response;
 };

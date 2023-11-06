@@ -3,18 +3,34 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login.js";
 import Home from "./components/HomePage/home.js";
 import CreateBlog from "./components/CreateBlog/postblog.js";
-import { Provider } from "react-redux";
-import store from "../src/components/Store/store";
+import { useSelector } from "react-redux";
+import BlogView from "./components/BlogView/blogview.js";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
+import { indigo } from "@mui/material/colors";
 
 const App = () => {
+  const themObj = useSelector((state) => state.navbar);
+  const darkTheme = createTheme({
+    palette: {
+      mode: themObj.mode,
+      palette: {
+        primary: indigo,
+        secondary: {
+          main: "#0d47a1",
+        },
+      },
+    },
+  });
   return (
-    <Provider store={store}>
+    <ThemeProvider theme={darkTheme}>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/createblog" element={<CreateBlog />} />
+        <Route exact path="/blogs/:id" element={<BlogView />} />
       </Routes>
-    </Provider>
+    </ThemeProvider>
   );
 };
 //APP MODIFIED

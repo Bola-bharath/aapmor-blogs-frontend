@@ -9,6 +9,7 @@ import {
   Typography,
   Stack,
   Divider,
+  Box,
 } from "@mui/material";
 import { sendOtpApi, loginValidation } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ const Login = () => {
   //STATE HOOKS
   const [buttonText, setButtonText] = useState("Get OTP");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showErrMsg, setShowErrMsg] = useState(false);
   const [showOtpView, setShowOtpView] = useState(false);
@@ -33,12 +35,13 @@ const Login = () => {
 
   const {
     register,
-    handleSubmit,
+    // handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
   //CHECKING FOR ALREADY REGISTERED USER AND NAVIGATING TO HOME
   const navigate = useNavigate();
+
   useEffect(() => {
     const token = Cookies.get("jwtToken");
     if (token !== undefined) {
@@ -51,27 +54,9 @@ const Login = () => {
     setErrorMsg(message);
   };
 
-  const handleEmailChange = (e) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    setEmail(e.target.value);
-    const isValidEmail = emailRegex.test(email);
-    console.log(isValidEmail);
-  };
-
-  useEffect(() => {
-    checkEmailValidation();
-  }, [email]);
-  const checkEmailValidation = () => {
-    if (email.endsWith("@aapmor.com")) {
-      setButtonDisable(false);
-    } else {
-      setButtonDisable(true);
-    }
-  };
-
   useEffect(() => {
     checkOtpValidation();
-  }, [otp]);
+  });
 
   const checkOtpValidation = () => {
     if (otp.length === 6) {
@@ -99,173 +84,229 @@ const Login = () => {
     }
   };
 
-  // EMAIL VERIFICATION API CALL
+  const isValidEmail = (email) => {
+    const pattern = /^[a-zA-Z]\w{3,12}@([a-zA-Z]+\.)+[a-zA-Z]+$/;
+    return pattern.test(email);
+  };
+  const handleEmailChange = (e) => {
+    setEmailError(false);
+    setEmail(e.target.value);
+  };
+
+  useEffect(() => {
+    checkEmailValidation();
+  });
+
+  const checkEmailValidation = () => {
+    if (email.endsWith("@aapmor.com")) {
+      setButtonDisable(false);
+    } else {
+      setButtonDisable(true);
+    }
+  };
+
+  // EMAIL VALIDATION AND VERIFICATION API CALL
   const onSubmitEmail = async (event) => {
     event.preventDefault();
-    setButtonText("sending...");
-    const response = await sendOtpApi(email);
-    const data = response.data;
-    setSuccessMsg(data.message);
-    setResponseOtp(data.otp);
+    const validEmail = isValidEmail(email);
+    if (!validEmail) {
+    }
 
-    if (response.status === 200) {
-      setButtonText("Enter OTP");
-      setShowEmailView(false);
-      setShowOtpView(true);
+    if (validEmail) {
+      setButtonText("sending...");
+      const response = await sendOtpApi(email);
+      const data = response.data;
+      setSuccessMsg(data.message);
+      setResponseOtp(data.otpCode);
+
+      if (response.status === 200) {
+        setButtonText("Enter OTP");
+        setShowEmailView(false);
+        setShowOtpView(true);
+      } else {
+        handleOnSubmitError(data.message);
+      }
     } else {
-      handleOnSubmitError(data.message);
+      setEmailError(true);
     }
   };
 
   //RETURN
   return (
-    <Grid
-      container
+    <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
         backgroundColor: "#E4F4FF",
+        width: "100vw",
+        boxSizing: "border-box",
+        margin: 0,
       }}
     >
       <Paper
         elevation={5}
+        component="form"
+        onSubmit={onSubmitEmail}
         sx={{
           borderRadius: "15px",
+          borderTopRightRadius: "60px",
+          borderBottomLeftRadius: "60px",
           height: { xs: "70%", lg: "80%" },
-          width: { xs: "100%", md: "70%", lg: "50%" },
+          width: { xs: "100%", sm: "80%", md: "70%", lg: "50%" },
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "20px",
         }}
       >
-        {/* Login */}
-        <Grid
-          item
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: { lg: "space-evenly", xs: "center" },
-            alignItems: "center",
-            padding: "20px",
-            height: "100%",
-            borderTopLeftRadius: "15px",
-            borderBottomLeftRadius: "15px",
-            width: "100%",
-          }}
-          onSubmit={onSubmitEmail}
+        <Stack direction={"row"} spacing={2} alignItems="center">
+          <img
+            src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
+            alt="logoAapmor"
+          />
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              borderRightWidth: 5,
+              borderColor: "#000EE6",
+              height: "80px",
+              alignSelf: "center",
+            }}
+          />
+          <Typography variant="h4" color={"#2C007E"}>
+            BLOGS
+          </Typography>
+        </Stack>
+        <Typography
+          variant="body2"
+          textAlign={"center"}
+          width={400}
+          color={"grey"}
         >
-          <Stack direction={"row"} spacing={2} alignItems="center">
-            <img
-              src="https://res.cloudinary.com/ddahy4bbc/image/upload/v1698670236/1697545876900-removebg-preview_d7xrcu.png"
-              alt="logoAapmor"
-              style={{ width: { xs: "50%", lg: "100%" } }}
-            />
-            <Divider
-              orientation="vertical"
-              flexItem
-              sx={{
-                borderRightWidth: 5,
-                borderColor: "#000EE6",
-                height: "100px",
-                alignSelf: "center",
-              }}
-            />
-            <Typography variant="h3" color={"#2C007E"}>
-              BLOGS
-            </Typography>
-          </Stack>
-          <Typography variant="body1" textAlign={"center"} width={400}>
-            Explore, engage, and be inspired. Dive into a world of captivating
-            content. Let's get started!
-          </Typography>
-          <Typography
-            variant="h4"
-            gutterBottom
-            sx={{ fontFamily: "cambria Math" }}
+          Explore, engage, and be inspired. Dive into a world of captivating
+          content. Let's get started!
+        </Typography>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ fontFamily: "cambria Math" }}
+        >
+          Login / Signup
+        </Typography>
+        {/* email Input */}
+        {showEmailView && (
+          <TextField
+            variant="outlined"
+            required
+            label="Email"
+            id="email"
+            error={emailError}
+            helperText={emailError === true && "Invalid email id"}
+            placeholder="Enter Aapmor email id"
+            onChange={handleEmailChange}
+            value={email}
+            sx={{
+              width: { xs: "90%", lg: "60%" },
+              marginBottom: { xs: "30px", lg: "0px" },
+              animation: emailError ? "shake 0.3s" : "",
+              "@keyframes shake": {
+                "0%": { marginLeft: "0rem" },
+                "25%": { marginLeft: "0.5rem" },
+                "75%": {
+                  marginLeft: "-0.5rem",
+                },
+                "100%": { marginLeft: "0rem" },
+              },
+            }}
+          />
+        )}
+        {showOtpView && (
+          <TextField
+            variant="outlined"
+            required
+            label="OTP"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(event) => setOtp(event.target.value)}
+            sx={{
+              width: { xs: "90%", lg: "60%" },
+              marginBottom: { xs: "30px", lg: "0px" },
+            }}
+          />
+        )}
+        {/* EMAIL SEND BUTTON */}
+        {showEmailView && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isButtonDisable}
+            sx={{
+              width: { xs: "90%", lg: "60%" },
+              height: "48px",
+              marginBottom: { xs: "30px", lg: "0px" },
+              fontWeight: 500,
+            }}
           >
-            Login / Signup
+            {buttonText}
+          </Button>
+        )}
+        {/*  OTP BUTTON */}
+        {showOtpView && (
+          <Button
+            variant="contained"
+            sx={{
+              width: { xs: "90%", lg: "60%" },
+              height: "48px",
+              marginBottom: { xs: "30px", lg: "0px" },
+            }}
+            onClick={handleOtpEntered}
+            disabled={isOtpButtonDisable}
+          >
+            {buttonText}
+          </Button>
+        )}
+        {showErrMsg && (
+          <Typography variant="p" sx={{ color: "red", marginTop: 2 }}>
+            *{errorMsg}
           </Typography>
-          {/* email Input */}
-          {showEmailView && (
-            <TextField
-              variant="outlined"
-              required
-              label="Email"
-              id="email"
-              {...register("email")}
-              error={errors?.email}
-              helperText={errors?.mail?.message}
-              placeholder="Enter Aapmor email id"
-              onChange={handleEmailChange}
-              value={email}
-              sx={{
-                width: { xs: "90%", lg: "60%" },
-                marginBottom: { xs: "30px", lg: "0px" },
-              }}
-            />
-          )}
-          {showOtpView && (
-            <TextField
-              variant="outlined"
-              required
-              label="OTP"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(event) => setOtp(event.target.value)}
-              sx={{
-                width: { xs: "90%", lg: "60%" },
-                marginBottom: { xs: "30px", lg: "0px" },
-              }}
-            />
-          )}
-          {/* EMAIL SEND BUTTON */}
-          {showEmailView && (
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={isButtonDisable}
-              sx={{
-                width: { xs: "90%", lg: "60%" },
-                height: "48px",
-                marginBottom: { xs: "30px", lg: "0px" },
-                fontWeight: 500,
-              }}
-            >
-              {buttonText}
-            </Button>
-          )}
-          {/*  OTP BUTTON */}
-          {showOtpView && (
-            <Button
-              variant="contained"
-              sx={{
-                width: { xs: "90%", lg: "60%" },
-                height: "48px",
-                marginBottom: { xs: "30px", lg: "0px" },
-              }}
-              onClick={handleOtpEntered}
-              disabled={isOtpButtonDisable}
-            >
-              {buttonText}
-            </Button>
-          )}
-          {showErrMsg && (
-            <Typography variant="p" sx={{ color: "red", marginTop: 2 }}>
-              *{errorMsg}
-            </Typography>
-          )}
-          {successMsg !== "" && (
-            <Typography
-              variant="subtitle2"
-              sx={{ color: "green", marginTop: 2 }}
-            >
-              {successMsg}
-            </Typography>
-          )}
-        </Grid>
+        )}
+        {successMsg !== "" && (
+          <Typography variant="subtitle2" sx={{ color: "green", marginTop: 2 }}>
+            {successMsg}
+          </Typography>
+        )}
       </Paper>
-    </Grid>
+    </Box>
   );
 };
 
 export default Login;
+
+// <LoadingButton
+// size="small"
+// onClick={handleClick}
+// endIcon={<SendIcon />}
+// loading={loading}
+// loadingPosition="end"
+// variant="contained"
+// >
+// <span>Send</span>
+// </LoadingButton>
+
+// &.error
+//     {
+//       animation: shake 0.2s ease-in-out 0s 2;
+//       box-shadow: 0 0 0.5em red;
+//     }
+//   }
+// }
+
+// @keyframes shake {
+//   0% { margin-left: 0rem; }
+//   25% { margin-left: 0.5rem; }
+//   75% { margin-left: -0.5rem; }
+//   100% { margin-left: 0rem; }
+// }
