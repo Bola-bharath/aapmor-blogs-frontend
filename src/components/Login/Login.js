@@ -69,18 +69,18 @@ const Login = () => {
   // OTP ENTERED API CALL
   const handleOtpEntered = async () => {
     setButtonText("Validating...");
-    if (otp === responseOtp) {
-      const loginDetails = { email };
-      const response = await loginValidation(loginDetails);
-      const data = response.data;
-      if (response.status === 200) {
-        setButtonText("Success");
-        const jwtToken = data.jwt_token;
-        Cookies.set("jwtToken", jwtToken);
-        navigate("/");
-      } else {
-        handleOnSubmitError(data.message);
-      }
+
+    const loginDetails = { email, otp };
+    const response = await loginValidation(loginDetails);
+    const data = response.data;
+    if (response.status === 200) {
+      setButtonText("Success");
+      const jwtToken = data.jwt_token;
+      Cookies.set("jwtToken", jwtToken);
+      navigate("/");
+    } else {
+      setButtonText("Enter OTP");
+      handleOnSubmitError(data.message);
     }
   };
 
@@ -117,7 +117,6 @@ const Login = () => {
       const response = await sendOtpApi(email);
       const data = response.data;
       setSuccessMsg(data.message);
-      setResponseOtp(data.otpCode);
 
       if (response.status === 200) {
         setButtonText("Enter OTP");

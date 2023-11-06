@@ -7,6 +7,7 @@ import {
   createBlogApiUrl,
   saveBlogsApiUrl,
 } from "../Url/configUrls";
+import Cookies from "js-cookie";
 
 export const sendOtpApi = async (email) => {
   const response = await axios.post(forgetPassUrl, { email });
@@ -28,7 +29,16 @@ export const submitRegisterApi = async (userDetails) => {
   return response;
 };
 export const createBlogApi = async (blogDetails) => {
-  const response = await axios.post(createBlogApiUrl, blogDetails);
+  const jwtToken = Cookies.get("jwt_token");
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwtToken}`,
+    },
+    body: JSON.stringify(blogDetails),
+  };
+  const response = await fetch(createBlogApi, options);
   return response;
 };
 export const getBlogsApi = async (category) => {

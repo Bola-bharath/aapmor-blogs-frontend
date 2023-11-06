@@ -9,10 +9,12 @@ import WomanIcon from "@mui/icons-material/Woman";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const SideBar = ({ category, setCategory }) => {
   const navigate = useNavigate();
-
+  const jwtToken = Cookies.get("jwtToken");
+  console.log(jwtToken);
   return (
     <Box
       sx={{
@@ -92,23 +94,24 @@ const SideBar = ({ category, setCategory }) => {
         />
       </Box>
       <Divider orientation="horizontal" flexItem />
-
-      <Tooltip
-        title="Create new blog "
-        arrow
-        placement="left"
-        sx={{ marginTop: 1, position: "sticky", top: 80 }}
-      >
-        <Fab
-          variant="extended"
-          color="error"
-          size="small"
-          onClick={() => navigate("/createblog")}
+      {jwtToken && (
+        <Tooltip
+          title="Create new blog "
+          arrow
+          placement="left"
+          sx={{ marginTop: 1, position: "sticky", top: 80 }}
         >
-          <CreateIcon sx={{ mr: 1 }} />
-          Create
-        </Fab>
-      </Tooltip>
+          <Fab
+            variant="extended"
+            color="error"
+            size="small"
+            onClick={() => navigate("/createblog")}
+          >
+            <CreateIcon sx={{ mr: 1 }} />
+            Create
+          </Fab>
+        </Tooltip>
+      )}
     </Box>
   );
 };
