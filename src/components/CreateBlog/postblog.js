@@ -10,12 +10,17 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Fab,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { useState, React } from "react";
 import { Image } from "@mui/icons-material";
 import { createBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/navBar";
+import TitleIcon from "@mui/icons-material/Title";
+import HMobiledataIcon from "@mui/icons-material/HMobiledata";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
@@ -69,19 +74,16 @@ const CreateBlog = () => {
       };
     });
   }
+  const renderTextInput = () => {};
+  const renderHeadingInput = () => {};
+  const renderImageInput = () => {};
 
   return (
     <>
       <Header />
-      <Box
-        align="center"
-        backgroundColor="grey"
-        sx={{ height: "100vh", padding: 2 }}
-      >
+      <Box align="center" sx={{ height: "100vh", padding: 2 }}>
         <Box
-          width={{ xs: 500, sm: 800 }}
-          // sx={{ marginTop: "3vh" }}
-
+          sx={{ width: { xs: "100%", lg: "75%" } }}
           bgcolor="white"
           color={"text.primary"}
           p={3}
@@ -99,8 +101,53 @@ const CreateBlog = () => {
               placeholder="Title"
               onChange={(e) => setTitle(e.target.value)}
               margin="normal"
-              fullWidth
+              sx={{ width: "50%" }}
             />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Box sx={{ minWidth: 200 }}>
+                <FormControl fullWidth variant="filled">
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    value={category}
+                    label={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    fullWidth
+                    size="small"
+                  >
+                    <MenuItem value={"All"}>All</MenuItem>
+                    <MenuItem value={"Fitness"}>Fitness</MenuItem>
+                    <MenuItem value={"Artificial Intelligence"}>
+                      Artificial Intelligence
+                    </MenuItem>
+                    <MenuItem value={"Entertainment"}>Entertainment</MenuItem>
+                    <MenuItem value={"Politics"}>Politics</MenuItem>
+                    <MenuItem value={"International"}>International</MenuItem>
+                    <MenuItem value={"News"}>News</MenuItem>
+
+                    <MenuItem value={"Sports"}>Sports</MenuItem>
+                    <MenuItem value={"Fashion"}>Fashion</MenuItem>
+
+                    <MenuItem value={"Food"}>Food</MenuItem>
+
+                    <MenuItem value={"Arts"}>Arts</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Button
+                variant="contained"
+                onClick={submitPost}
+                sx={{ height: "30px" }}
+              >
+                Publish
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/")}
+                sx={{ height: "30px" }}
+              >
+                Cancel
+              </Button>
+            </Stack>
             <Input
               accept="image/*"
               multiple
@@ -115,8 +162,8 @@ const CreateBlog = () => {
           </Box>
           <TextField
             multiline
-            rows={8}
-            variant="standard"
+            rows={5}
+            // variant="filled"
             placeholder="Write Your blog"
             fullWidth
             onChange={(e) => setDescription(e.target.value)}
@@ -128,80 +175,34 @@ const CreateBlog = () => {
               alignItems: "center",
             }}
           >
-            <TextField
-              variant="standard"
-              placeholder="Enter Your Name"
-              onChange={(e) => setUsername(e.target.value)}
-              margin="normal"
-              size="small"
-            />
-            <Box sx={{ minWidth: 200 }}>
-              <FormControl fullWidth variant="standard">
-                <InputLabel>Role</InputLabel>
-                <Select
-                  value={userrole}
-                  label={userrole}
-                  onChange={(e) => setUserrole(e.target.value)}
-                >
-                  <MenuItem value={"Full Stack Developer"}>
-                    Full Stack Developer
-                  </MenuItem>
-                  <MenuItem value={"Data Analyst"}>Data Analyst</MenuItem>
-                  <MenuItem value={"Quality Analyst"}>Quality Analyst</MenuItem>
-                  <MenuItem value={"UI/UX Designer"}>UI/UX Designer</MenuItem>
-                  <MenuItem value={"AI/ML"}>AI/ML</MenuItem>
-                </Select>
-              </FormControl>
+            {/* <Box sx={{ minWidth: 200 }}>
+         
             </Box>
-            <Box sx={{ minWidth: 200 }}>
-              <FormControl fullWidth variant="standard">
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={category}
-                  label={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <MenuItem value={"All"}>All</MenuItem>
-                  <MenuItem value={"Fitness"}>Fitness</MenuItem>
-                  <MenuItem value={"Artificial Intelligence"}>
-                    Artificial Intelligence
-                  </MenuItem>
-                  <MenuItem value={"Entertainment"}>Entertainment</MenuItem>
-                  <MenuItem value={"Politics"}>Politics</MenuItem>
-                  <MenuItem value={"International"}>International</MenuItem>
-                  <MenuItem value={"News"}>News</MenuItem>
 
-                  <MenuItem value={"Sports"}>Sports</MenuItem>
-                  <MenuItem value={"Fashion"}>Fashion</MenuItem>
-
-                  <MenuItem value={"Food"}>Food</MenuItem>
-
-                  <MenuItem value={"Arts"}>Arts</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            {/* <TextField
-              variant="standard"
-              placeholder="Select blog Role"
-              onChange={(e) => setUserrole(e.target.value)}
-              margin="normal"
-              size="small"
-            />
-            <TextField
-              variant="standard"
-              placeholder="Select blog category"
-              onChange={(e) => setCategory(e.target.value)}
-              margin="normal"
-            /> */}
-            <Button
-              variant="outlined"
-              onClick={submitPost}
-              sx={{ height: "30px" }}
-            >
-              Publish
-            </Button>
+            */}
           </Box>
         </Box>
+      </Box>
+      <Box
+        sx={{ width: "30px", position: "fixed", top: "200px", left: "100px" }}
+      >
+        <Stack direction="column">
+          <Tooltip title="Insert Text" placement="left">
+            <IconButton onClick={renderTextInput}>
+              <TitleIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Insert Heading" placement="left">
+            <IconButton onClick={renderHeadingInput}>
+              <HMobiledataIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Insert Image" placement="left">
+            <IconButton onClick={renderImageInput}>
+              <Image />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Box>
     </>
   );

@@ -87,10 +87,10 @@ const Home = (props) => {
         const emailObj = { email };
         const response = await profileCheckingApi(emailObj);
         console.log(response.status);
-        if (response.status === 200) {
-          setProfile(false);
-        } else if (response.status === 202) {
+        if (response.status === 202) {
           setProfile(true);
+        } else if (response.status === 200) {
+          setProfile(false);
         }
       };
       checkProfileDetails();
