@@ -6,6 +6,10 @@ import {
   Typography,
   Stack,
   Input,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useState, React } from "react";
 import { Image } from "@mui/icons-material";
@@ -83,44 +87,20 @@ const CreateBlog = () => {
           p={3}
         >
           <Typography variant="h6">Create Blog</Typography>
-          <TextField
-            variant="standard"
-            placeholder="Title"
-            onChange={(e) => setTitle(e.target.value)}
-            margin="normal"
-            fullWidth
-          />
-          <TextField
-            multiline
-            rows={8}
-            variant="standard"
-            placeholder="Write Your blog"
-            fullWidth
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-            <TextField
-              variant="outlined"
-              placeholder="Enter Your Name"
-              onChange={(e) => setUsername(e.target.value)}
-              margin="normal"
-              size="small"
-            />
-            <TextField
-              variant="outlined"
-              placeholder="Enter blog Role"
-              onChange={(e) => setUserrole(e.target.value)}
-              margin="normal"
-              size="small"
-            />
-          </Box>
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-around",
+              justifyContent: "space-between",
               alignItems: "center",
             }}
           >
+            <TextField
+              variant="standard"
+              placeholder="Title"
+              onChange={(e) => setTitle(e.target.value)}
+              margin="normal"
+              fullWidth
+            />
             <Input
               accept="image/*"
               multiple
@@ -132,13 +112,92 @@ const CreateBlog = () => {
             <label htmlFor="imageFile">
               <Image />
             </label>
+          </Box>
+          <TextField
+            multiline
+            rows={8}
+            variant="standard"
+            placeholder="Write Your blog"
+            fullWidth
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
             <TextField
               variant="standard"
-              placeholder="Enter blog category"
+              placeholder="Enter Your Name"
+              onChange={(e) => setUsername(e.target.value)}
+              margin="normal"
+              size="small"
+            />
+            <Box sx={{ minWidth: 200 }}>
+              <FormControl fullWidth variant="standard">
+                <InputLabel>Role</InputLabel>
+                <Select
+                  value={userrole}
+                  label={userrole}
+                  onChange={(e) => setUserrole(e.target.value)}
+                >
+                  <MenuItem value={"Full Stack Developer"}>
+                    Full Stack Developer
+                  </MenuItem>
+                  <MenuItem value={"Data Analyst"}>Data Analyst</MenuItem>
+                  <MenuItem value={"Quality Analyst"}>Quality Analyst</MenuItem>
+                  <MenuItem value={"UI/UX Designer"}>UI/UX Designer</MenuItem>
+                  <MenuItem value={"AI/ML"}>AI/ML</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 200 }}>
+              <FormControl fullWidth variant="standard">
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={category}
+                  label={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <MenuItem value={"All"}>All</MenuItem>
+                  <MenuItem value={"Fitness"}>Fitness</MenuItem>
+                  <MenuItem value={"Artificial Intelligence"}>
+                    Artificial Intelligence
+                  </MenuItem>
+                  <MenuItem value={"Entertainment"}>Entertainment</MenuItem>
+                  <MenuItem value={"Politics"}>Politics</MenuItem>
+                  <MenuItem value={"International"}>International</MenuItem>
+                  <MenuItem value={"News"}>News</MenuItem>
+
+                  <MenuItem value={"Sports"}>Sports</MenuItem>
+                  <MenuItem value={"Fashion"}>Fashion</MenuItem>
+
+                  <MenuItem value={"Food"}>Food</MenuItem>
+
+                  <MenuItem value={"Arts"}>Arts</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            {/* <TextField
+              variant="standard"
+              placeholder="Select blog Role"
+              onChange={(e) => setUserrole(e.target.value)}
+              margin="normal"
+              size="small"
+            />
+            <TextField
+              variant="standard"
+              placeholder="Select blog category"
               onChange={(e) => setCategory(e.target.value)}
               margin="normal"
-            />
-            <Button variant="outlined" onClick={submitPost}>
+            /> */}
+            <Button
+              variant="outlined"
+              onClick={submitPost}
+              sx={{ height: "30px" }}
+            >
               Publish
             </Button>
           </Box>
