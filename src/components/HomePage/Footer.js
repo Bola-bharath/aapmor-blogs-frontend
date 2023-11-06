@@ -8,7 +8,12 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 const Footer = () => {
   return (
-    <Paper elevation={5} bgcolor={"background.default"} color={"text.primary"}>
+    <Paper
+      elevation={5}
+      bgcolor={"background.default"}
+      color={"text.primary"}
+      sx={{ position: "relative", bottom: "0px", maxWidth: "100vw" }}
+    >
       <Grid
         container
         spacing={1}

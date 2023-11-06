@@ -1,14 +1,28 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "./navBar";
+import Footer from "./footer";
 import Blog from "../Blog/blog";
-import axios from "axios";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
-import { useSelector } from "react-redux";
-import { Box, Chip, Grid, Stack } from "@mui/material";
+import SideBar from "../Sidebar/sideBar";
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Typography,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Chip, Grid } from "@mui/material";
 import styled from "@emotion/styled";
-import Add from "../Add/addBlog";
+import { getBlogsApi } from "../ApiCalls/apiCalls";
+import { setBlogsData } from "../Slices/blogSlice";
+import CloseIcon from "@mui/icons-material/Close";
+import SaveIcon from "@mui/icons-material/Save";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const ChipStyled = styled(Chip)((theme) => {
   return {
@@ -16,159 +30,203 @@ const ChipStyled = styled(Chip)((theme) => {
   };
 });
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  height: "300px",
+  bgcolor: "background.paper",
+  borderRadius: "12px",
+  boxShadow: 24,
+  p: 2,
+};
+
 const Home = (props) => {
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState(true);
   const [category, setCategory] = useState("All");
-  const [blogs, setBlogs] = useState([]);
-  const themObj = useSelector((state) => state.navbar);
-  const darkTheme = createTheme({
-    palette: {
-      mode: themObj.mode,
-      primary: {
-        main: "#d2edff",
-      },
-    },
-  });
+  const [apiStatus, setApiStatus] = useState("INITIAL");
+  const blogObj = useSelector((state) => state.blogs);
+  const [intervalId, setIntervalId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const blogs = blogObj.blogs;
 
   useEffect(() => {
     getBlogsData();
   }, []);
 
+  /* useEffect(() => {
+    const intervalId = setTimeout(() => {
+      setProfile(true);
+    }, 5000);
+    setIntervalId(intervalId);
+  }); */
+
   const getBlogsData = async () => {
-    const response = await axios.get(
-      `http://192.168.0.106:3005/blogs/filter/?category=${category}`
-    );
-    console.log(response.data);
-    setBlogs(response.data);
-  };
-  const handleClick = (e) => {
-    setCategory(e.target.textContent);
+    const response = await getBlogsApi(category);
+    if (response.status === 200) {
+      setApiStatus("SUCCESS");
+      dispatch(setBlogsData(response.data));
+    } else {
+      setApiStatus("FAILURE");
+    }
   };
 
   useEffect(() => {
+    setApiStatus("INITIAL");
     getBlogsData();
   }, [category]);
 
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <Header />
+  const renderLoadingView = () => {
+    return (
       <Box
-        sx={{ display: "flex", flexDirection: "column" }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "90vh",
+          width: "80vw",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  };
+
+  const renderSuccessView = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          minHeight: "90vh",
+          padding: "20px",
+          boxSizing: "border-box",
+          justifyContent: "center",
+        }}
         bgcolor={"background.default"}
         color={"text.primary"}
+        gap={2}
       >
-        {/* <SideBar /> */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            padding: 1.5,
-            gap: 4,
-            flexWrap: "nowrap",
-            overflowX: "hidden",
-            width: "auto",
-            justifyContent: "center",
-            position: "sticky",
-            top: "0px",
-            zIndex: 1,
-          }}
-          bgcolor={"background.default"}
-          color={"text.primary"}
-          onClick={handleClick}
-        >
-          <ChipStyled
-            label="All"
-            color={category === "All" ? "primary" : "default"}
-            variant={category === "All" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Fitness"
-            color={category === "Fitness" ? "primary" : "default"}
-            variant={category === "Fitness" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Technology"
-            color={category === "Technology" ? "primary" : "default"}
-            variant={category === "Technology" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Artificial Intelligence"
-            color={
-              category === "Artificial Intelligence" ? "primary" : "default"
-            }
-            variant={
-              category === "Artificial Intelligence" ? "filled" : "outlined"
-            }
-          />
-          <ChipStyled
-            label="Entertainment"
-            color={category === "Entertainment" ? "primary" : "default"}
-            variant={category === "Entertainment" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Politics"
-            color={category === "Politics" ? "primary" : "default"}
-            variant={category === "Politics" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="International"
-            color={category === "International" ? "primary" : "default"}
-            variant={category === "International" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="News"
-            color={category === "News" ? "primary" : "default"}
-            variant={category === "News" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Sports"
-            color={category === "Sports" ? "primary" : "default"}
-            variant={category === "Sports" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Fashion"
-            color={category === "Fashion" ? "primary" : "default"}
-            variant={category === "Fashion" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Food"
-            color={category === "Food" ? "primary" : "default"}
-            variant={category === "Food" ? "filled" : "outlined"}
-          />
-          <ChipStyled
-            label="Arts"
-            color={category === "Arts" ? "primary" : "default"}
-            variant={category === "Arts" ? "filled" : "outlined"}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            padding: "20px",
-          }}
-        >
-          <Grid
-            container
+        {blogs.map((blogItem) => {
+          return <Blog blogDetails={blogItem} key={blogItem._id} />;
+        })}
+      </Box>
+    );
+  };
+
+  const renderFailureView = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "85vh",
+        }}
+      >
+        <Typography variant="h6">
+          Unable to load blogs... please try after some time
+        </Typography>
+      </Box>
+    );
+  };
+
+  const renderBlogsApi = () => {
+    switch (apiStatus) {
+      case "INITIAL":
+        return renderLoadingView();
+      case "SUCCESS":
+        return renderSuccessView();
+      case "FAILURE":
+        return renderFailureView();
+      default:
+        return null;
+    }
+  };
+  const handleClose = () => {
+    setProfile(false);
+    // clearTimeout(intervalId);
+  };
+
+  const showPopupProfile = () => {
+    return (
+      <Modal open={profile} onClose={handleClose}>
+        <Box sx={style}>
+          <Box
             sx={{
-              marginTop: "10px",
               display: "flex",
-              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "",
-              maxWidth: "70%",
-              gap: 4,
+              justifyContent: "space-between",
             }}
           >
-            {blogs.map((blogItem) => {
-              return <Blog blogDetails={blogItem} key={blogItem._id} />;
-            })}
-          </Grid>
+            <Typography variant="p" fontSize={16} fontWeight={600}>
+              Profile Update
+            </Typography>
+            <IconButton onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider orientation="horizontal" />
+
+          <Typography variant="subtitle1" fontWeight={600} textAlign={"center"}>
+            Hey User! tell us a little more about you
+          </Typography>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">Designation *</Typography>
+            <FormControl sx={{ width: "95%", mt: 1 }} size="small">
+              <InputLabel>Select</InputLabel>
+              <Select>
+                <MenuItem value="HR">HR</MenuItem>
+                <MenuItem value="Devops">Devops</MenuItem>
+                <MenuItem value="QA">QA</MenuItem>
+                <MenuItem value="Data Science">Data Science</MenuItem>
+                <MenuItem value="Data Analyst">Data Analyst</MenuItem>
+                <MenuItem value="Full Stack Developer">
+                  Full Stack Developer
+                </MenuItem>
+                <MenuItem value="UI / UX">UI / UX</MenuItem>
+              </Select>
+            </FormControl>
+            <Typography variant="body2">Gender *</Typography>
+            <FormControl sx={{ width: "95%", mt: 1 }} size="small">
+              <InputLabel>Select</InputLabel>
+              <Select>
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          <LoadingButton
+            color="primary"
+            onClick={() => setLoading(true)}
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
+            variant="contained"
+          >
+            <span>Save</span>
+          </LoadingButton>
         </Box>
+      </Modal>
+    );
+  };
+
+  return (
+    <>
+      <Header />
+      <Box sx={{ display: "flex" }}>
+        <SideBar setCategory={setCategory} category={category} />
+        {renderBlogsApi()}
       </Box>
       <Footer />
-      <Add />
-    </ThemeProvider>
+      {profile && showPopupProfile()}
+    </>
   );
 };
 

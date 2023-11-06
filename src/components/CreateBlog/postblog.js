@@ -11,7 +11,7 @@ import { useState, React } from "react";
 import { Image } from "@mui/icons-material";
 import { createBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
-import Header from "../HomePage/Header";
+import Header from "../HomePage/navBar";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
