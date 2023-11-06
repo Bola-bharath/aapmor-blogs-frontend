@@ -76,10 +76,10 @@ const Login = () => {
     if (response.status === 200) {
       setButtonText("Success");
       const jwtToken = data.jwt_token;
-      Cookies.set("jwtToken", jwtToken);
+      Cookies.set("jwtToken", jwtToken, { expires: 10 });
+      Cookies.set("userEmail", data.email, { expires: 10 });
       navigate("/");
     } else {
-      setButtonText("Enter OTP");
       handleOnSubmitError(data.message);
     }
   };

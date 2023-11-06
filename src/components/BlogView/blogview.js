@@ -1,6 +1,8 @@
 import {
+  Avatar,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Divider,
   Stack,
@@ -11,7 +13,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "../HomePage/navBar";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
+import Footer from "../HomePage/footer";
+import { commentsApi } from "../ApiCalls/apiCalls";
+import Cookies from "js-cookie";
 
 const BlogView = (props) => {
   const [blogDetails, setBlogDetails] = useState({});
@@ -19,19 +26,29 @@ const BlogView = (props) => {
   const { pathname } = location;
   const path = pathname.split("/");
   const id = path[2];
-  console.log(id, "Outside");
   const [apiStatus, setApiStatus] = useState("INITIAL");
+  const [comment, setComment] = useState("");
+
+  const token = Cookies.get("jwtToken");
+  const name = Cookies.get("name");
+
+  const handleCommentApi = async () => {
+    const commentObject = { comment, id, name };
+    const response = await commentsApi(commentObject);
+    console.log(response);
+    if (response.status === 200) {
+      getBlogItem();
+    }
+    setComment("");
+  };
 
   useEffect(() => {
-    console.log("Use effect");
     getBlogItem();
   }, []);
 
   const getBlogItem = async () => {
-    console.log(id, "from api call");
     const response = await axios.get(`http://localhost:3005/blogs/${id}`);
     const blogDetails = await response.data;
-    console.log(blogDetails);
     if (response.status === 200) {
       setApiStatus("SUCCESS");
       setBlogDetails(blogDetails);
@@ -103,8 +120,8 @@ const BlogView = (props) => {
 
   const renderNoCommentsView = () => {
     return (
-      <Box>
-        <Typography variant="caption">No comments yet</Typography>
+      <Box sx={{}}>
+        <Typography variant="body1">No comments yet</Typography>
       </Box>
     );
   };
@@ -114,10 +131,10 @@ const BlogView = (props) => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          width: "75%",
+          marginBottom: 4,
         }}
-        bgcolor={"background.default"}
-        color={"text.primary"}
       >
         <Box
           sx={{
@@ -125,16 +142,51 @@ const BlogView = (props) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
-            paddingLeft: 3,
+            padding: 4,
             boxSizing: "border-box",
           }}
         >
+          <Chip
+            label={category}
+            size="small"
+            color="primary"
+            sx={{
+              justifySelf: "flex-start",
+              alignSelf: "flex-start",
+              fontSize: "12px",
+              color: "#ffffff",
+              padding: 1,
+              mb: 2,
+            }}
+          />
           <Typography gutterBottom variant="h4" color={"grey"}>
             {title}
           </Typography>
-          <Typography variant="caption">
-            by <b>{username}</b> on <b>{date}</b>
-          </Typography>
+
+          <Box sx={{ display: "flex", gap: 1, pb: 1 }}>
+            <Avatar>P</Avatar>
+            <Stack direction={"column"} spacing={0}>
+              <Stack
+                direction={"row"}
+                spacing={1}
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <Typography variant="p">{username}</Typography>
+                <Typography variant="caption">Follow</Typography>
+              </Stack>
+              <Stack direction={"row"} spacing={2}>
+                <Typography variant="caption" color={"darkgray"}>
+                  Created on {date}
+                </Typography>
+                <Typography variant="caption" color={"#00000060"}>
+                  5 min read.
+                </Typography>
+                <Typography variant="caption" color={"#00000080"}>
+                  3K people read this
+                </Typography>
+              </Stack>
+            </Stack>
+          </Box>
           <Divider orientation="horizontal" flexItem />
           <Typography
             gutterBottom
@@ -145,62 +197,56 @@ const BlogView = (props) => {
             {description}
           </Typography>
           <img src={blogImage} alt="blogimage" height={300} width="auto" />
-          {/* <Typography gutterBottom variant="body1">
-            {description.slice(100)}
-          </Typography>
-          <img src={blogImage} alt="blogimage" height={300} width="auto" />
- */}
-          <Stack direction={"row"} spacing={1} mt={2}>
-            <FavoriteIcon />
-            <Typography>{likes} likes</Typography>
+
+          <Divider orientation="horizontal" flexItem sx={{ mt: 3 }} />
+          <Stack direction={"row"} spacing={4} mt={2}>
+            <Stack direction={"column"} alignItems={"center"}>
+              <ThumbUpOutlinedIcon />
+              <Typography>{likes} </Typography>
+            </Stack>
+            <Stack direction={"column"} alignItems={"center"} mt={2}>
+              <InsertCommentOutlinedIcon />
+              <Typography>{comments.length} </Typography>
+            </Stack>
           </Stack>
         </Box>
-        <Box>
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{
-              borderRightWidth: 4,
-              height: "100%",
-              alignSelf: "center",
-            }}
-          />
-        </Box>
+        {/* Comments view */}
         <Box
           sx={{
-            position: "sticky",
-            top: 0,
-            bottom: "0px",
-            width: "300px",
-            padding: 2,
+            paddingLeft: 4,
+            backgroundColor: "#fff",
           }}
-          bgcolor={"background.default"}
-          color={"text.primary"}
         >
-          <Box
-            sx={{ width: "300px" }}
-            bgcolor={"background.default"}
-            color={"text.primary"}
-          >
-            <Typography
-              sx={{ backgroundColor: "lightgrey", borderRadius: "10px", p: 1 }}
-            >
-              Comments
-            </Typography>
+          <Box>
+            <Stack direction={"row"} spacing={2} alignItems={"center"}>
+              <ChatBubbleOutlineOutlinedIcon />
+              <Typography fontFamily={"Lora"} fontSize={"24px"}>
+                Comments
+              </Typography>
+            </Stack>
+            <Divider orientation="horizontal" flexItem />
             {comments.length >= 1 ? renderComments() : renderNoCommentsView()}
-
-            <Box>
-              <Stack direction={"row"} spacing={1} sx={{ mt: 1 }}>
-                <TextField
-                  size="small"
-                  placeholder="Enter new comment"
-                  sx={{ fontSize: "10px" }}
-                />
-                <Button variant="contained" size="small">
-                  Comment
-                </Button>
-              </Stack>
-            </Box>
+            {/* Comments box */}
+            {token && (
+              <Box>
+                <Stack direction={"row"} spacing={1} sx={{ mt: 1 }}>
+                  <TextField
+                    size="small"
+                    placeholder="Enter new comment"
+                    sx={{ fontSize: "10px" }}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleCommentApi}
+                  >
+                    Comment
+                  </Button>
+                </Stack>
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
@@ -226,6 +272,7 @@ const BlogView = (props) => {
     <>
       <Header />
       {renderBlogDetails()}
+      <Footer />
     </>
   );
 };

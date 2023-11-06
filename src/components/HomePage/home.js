@@ -13,16 +13,22 @@ import {
   MenuItem,
   Modal,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Chip, Grid } from "@mui/material";
 import styled from "@emotion/styled";
-import { getBlogsApi } from "../ApiCalls/apiCalls";
+import {
+  getBlogsApi,
+  profileCheckingApi,
+  profileUpdateApi,
+} from "../ApiCalls/apiCalls";
 import { setBlogsData } from "../Slices/blogSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Cookies from "js-cookie";
 
 const ChipStyled = styled(Chip)((theme) => {
   return {
@@ -36,7 +42,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  height: "300px",
+  height: "350px",
   bgcolor: "background.paper",
   borderRadius: "12px",
   boxShadow: 24,
@@ -45,26 +51,55 @@ const style = {
 
 const Home = (props) => {
   const dispatch = useDispatch();
-  const [profile, setProfile] = useState(true);
+  const [profile, setProfile] = useState(false);
   const [category, setCategory] = useState("All");
   const [apiStatus, setApiStatus] = useState("INITIAL");
   const blogObj = useSelector((state) => state.blogs);
-  const [intervalId, setIntervalId] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const blogs = blogObj.blogs;
 
+  const [designation, setDesignation] = useState("Select");
+  const [gender, setGender] = useState("Select");
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const email = Cookies.get("userEmail");
+
+  const handleProfileUpdate = async () => {
+    setLoading(true);
+    const profileDetails = {
+      gender,
+      designation,
+      email,
+      name: name,
+      isProfileUpdated: true,
+    };
+    const response = await profileUpdateApi(profileDetails);
+    if (response.status === 200) {
+      Cookies.set("name", name, { expires: 10 });
+      setProfile(false);
+      alert("Profile details updated successfully");
+    }
+  };
+
   useEffect(() => {
-    getBlogsData();
+    const token = Cookies.get("jwtToken");
+    if (token !== undefined) {
+      const checkProfileDetails = async () => {
+        const emailObj = { email };
+        const response = await profileCheckingApi(emailObj);
+        console.log(response.status);
+        if (response.status === 200) {
+          setProfile(false);
+        } else if (response.status === 202) {
+          setProfile(true);
+        }
+      };
+      checkProfileDetails();
+    } else {
+      setProfile(false);
+    }
   }, []);
 
-  /* useEffect(() => {
-    const intervalId = setTimeout(() => {
-      setProfile(true);
-    }, 5000);
-    setIntervalId(intervalId);
-  }); */
-
+  //GET BLOGS API CALL
   const getBlogsData = async () => {
     const response = await getBlogsApi(category);
     if (response.status === 200) {
@@ -77,6 +112,7 @@ const Home = (props) => {
 
   useEffect(() => {
     setApiStatus("INITIAL");
+    console.log("getting blogs");
     getBlogsData();
   }, [category]);
 
@@ -150,7 +186,6 @@ const Home = (props) => {
   };
   const handleClose = () => {
     setProfile(false);
-    // clearTimeout(intervalId);
   };
 
   const showPopupProfile = () => {
@@ -177,10 +212,26 @@ const Home = (props) => {
             Hey User! tell us a little more about you
           </Typography>
           <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">Name *</Typography>
+
+            <TextField
+              required
+              fullWidth
+              size="small"
+              placeholder="Enter your name"
+              onChange={(e) => setName(e.target.value)}
+            />
+
             <Typography variant="body2">Designation *</Typography>
-            <FormControl sx={{ width: "95%", mt: 1 }} size="small">
-              <InputLabel>Select</InputLabel>
-              <Select>
+            <FormControl sx={{ mt: 1 }} fullWidth size="small">
+              <Select
+                onChange={(e) => setDesignation(e.target.value)}
+                value={designation}
+              >
+                <MenuItem value="Select" disabled>
+                  Select
+                </MenuItem>
+
                 <MenuItem value="HR">HR</MenuItem>
                 <MenuItem value="Devops">Devops</MenuItem>
                 <MenuItem value="QA">QA</MenuItem>
@@ -193,25 +244,30 @@ const Home = (props) => {
               </Select>
             </FormControl>
             <Typography variant="body2">Gender *</Typography>
-            <FormControl sx={{ width: "95%", mt: 1 }} size="small">
-              <InputLabel>Select</InputLabel>
-              <Select>
+            <FormControl sx={{ mt: 1 }} fullWidth size="small">
+              <Select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+              >
+                <MenuItem value="Select" disabled>
+                  Select
+                </MenuItem>
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
             </FormControl>
+            <Button
+              color="primary"
+              onClick={handleProfileUpdate}
+              startIcon={<SaveIcon />}
+              variant="contained"
+              fullWidth
+              sx={{ mt: 4 }}
+            >
+              <span>Save</span>
+            </Button>
           </Box>
-          <LoadingButton
-            color="primary"
-            onClick={() => setLoading(true)}
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-            variant="contained"
-          >
-            <span>Save</span>
-          </LoadingButton>
         </Box>
       </Modal>
     );

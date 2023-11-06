@@ -10,6 +10,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
@@ -19,12 +20,10 @@ import Cookies from "js-cookie";
 import React from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { setBlogViewObj } from "../Slices/blogSlice";
 
 const Blog = (blogDetails) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const {
     category,
     comments,
@@ -40,7 +39,6 @@ const Blog = (blogDetails) => {
   } = blogDetails.blogDetails;
 
   const handleReadMore = () => {
-    dispatch(setBlogViewObj(blogDetails));
     navigate(`/blogs/${_id}`);
   };
   return (
@@ -49,7 +47,8 @@ const Blog = (blogDetails) => {
         height: "max-content",
         width: 250,
         "&:hover": {
-          boxShadow: "0px 0px 10px 0px #00000050 inset",
+          transform: "scale(1.02)",
+          boxShadow: "0px 0px 10px 0px #00000050 ",
         },
       }}
     >
@@ -131,8 +130,10 @@ const Blog = (blogDetails) => {
           },
         }}
       >
-        <Typography variant="body2">Read more</Typography>
-        <IconButton>
+        <Tooltip title="Click on arrow to read blog">
+          <Typography variant="body2">Read more</Typography>
+        </Tooltip>
+        <IconButton onClick={handleReadMore}>
           <ArrowForwardIcon />
         </IconButton>
       </Box>
