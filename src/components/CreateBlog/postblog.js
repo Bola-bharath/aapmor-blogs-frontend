@@ -14,13 +14,14 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 import { Image } from "@mui/icons-material";
-import { createBlogApi } from "../ApiCalls/apiCalls";
+import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/navBar";
 import TitleIcon from "@mui/icons-material/Title";
 import HMobiledataIcon from "@mui/icons-material/HMobiledata";
+import htmlContentFunction from "../htmlModifier";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
@@ -29,6 +30,7 @@ const CreateBlog = () => {
   const [username, setUsername] = useState("");
   const [userrole, setUserrole] = useState("");
   const [image, setImage] = useState("");
+  const [htmlContent, setHtmlContent] = useState("");
   const navigate = useNavigate();
   const handleFileUpload = async (e) => {
     console.log(e.target.files[0]);
@@ -36,6 +38,20 @@ const CreateBlog = () => {
     const base64 = await convertToBase64(file);
     setImage(base64);
   };
+
+  useEffect(() => {
+    async function fetchHTMLFile() {
+      try {
+        const response = await fetch("../content.html");
+        const html = await response.text();
+        setHtmlContent(html);
+      } catch (error) {
+        console.error("Error loading HTML file:", error);
+      }
+    }
+
+    fetchHTMLFile();
+  }, []);
 
   const newDate = new Date();
   const dateObject = `${newDate.getDate()} ${newDate.toLocaleString("default", {
@@ -61,6 +77,9 @@ const CreateBlog = () => {
     if (response.status === 200) {
       navigate("/");
     }
+
+    htmlContentFunction(blogDetails);
+    await publishBlogApi(htmlContent);
   };
   function convertToBase64(file) {
     return new Promise((resolve, reject) => {
