@@ -31,9 +31,10 @@ const BlogView = (props) => {
 
   const token = Cookies.get("jwtToken");
   const name = Cookies.get("name");
+  const dateObject = new Date();
 
   const handleCommentApi = async () => {
-    const commentObject = { comment, id, name };
+    const commentObject = { comment, id, name, dateObject };
     const response = await commentsApi(commentObject);
     console.log(response);
     if (response.status === 200) {
@@ -57,19 +58,9 @@ const BlogView = (props) => {
     }
   };
 
-  const {
-    category,
-    comments,
-    date,
-    description,
-    images,
-    likes,
-    title,
-    username,
-    userrole,
-    _id,
-    blogImage,
-  } = blogDetails;
+  const { category, comments, date, likes, title, html, username } =
+    blogDetails;
+  const commentsArray = comments === null ? [] : comments;
 
   const renderLoading = () => {
     return (
@@ -188,17 +179,15 @@ const BlogView = (props) => {
             </Stack>
           </Box>
           <Divider orientation="horizontal" flexItem />
-          <Typography
-            gutterBottom
-            variant="body1"
-            mt={2}
-            sx={{ display: "inline", maxWidth: "80%" }}
-          >
-            {description}
-          </Typography>
-          <img src={blogImage} alt="blogimage" height={300} width="auto" />
+          {/* HTML FILE */}
+
+          <Box
+            dangerouslySetInnerHTML={{ __html: html }}
+            sx={{ width: "75%", maxWidth: "75%" }}
+          ></Box>
 
           <Divider orientation="horizontal" flexItem sx={{ mt: 3 }} />
+          {/* Comments */}
           <Stack direction={"row"} spacing={4} mt={2}>
             <Stack direction={"column"} alignItems={"center"}>
               <ThumbUpOutlinedIcon />
@@ -225,7 +214,9 @@ const BlogView = (props) => {
               </Typography>
             </Stack>
             <Divider orientation="horizontal" flexItem />
-            {comments.length >= 1 ? renderComments() : renderNoCommentsView()}
+            {commentsArray.length >= 1
+              ? renderComments()
+              : renderNoCommentsView()}
             {/* Comments box */}
             {token && (
               <Box>

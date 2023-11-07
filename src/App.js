@@ -2,12 +2,13 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login.js";
 import Home from "./components/HomePage/home.js";
-import CreateBlog from "./components/CreateBlog/postblog.js";
+import MyEditor from "./MyEditor.js";
 import { useSelector } from "react-redux";
 import BlogView from "./components/BlogView/blogview.js";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { indigo } from "@mui/material/colors";
+import CreateBlog from "./components/CreateBlog/postblog.js";
 
 const App = () => {
   const themObj = useSelector((state) => state.navbar);

@@ -14,7 +14,6 @@ import Cookies from "js-cookie";
 const SideBar = ({ category, setCategory }) => {
   const navigate = useNavigate();
   const jwtToken = Cookies.get("jwtToken");
-  console.log(jwtToken);
   return (
     <Box
       sx={{
@@ -90,6 +89,44 @@ const SideBar = ({ category, setCategory }) => {
           icon={<FastfoodIcon />}
           label="Food & Health"
           variant={category === "Food & Health" ? "filled" : "outlined"}
+          onClick={(e) => setCategory(e.target.innerText)}
+        />
+
+        <Chip
+          size="small"
+          icon={<FastfoodIcon />}
+          label="Entertainment"
+          variant={category === "Entertainment" ? "filled" : "outlined"}
+          onClick={(e) => setCategory(e.target.innerText)}
+        />
+        <Chip
+          size="small"
+          icon={<FastfoodIcon />}
+          label="Artificial Intelligence"
+          variant={
+            category === "Artificial Intelligence" ? "filled" : "outlined"
+          }
+          onClick={(e) => setCategory(e.target.innerText)}
+        />
+        <Chip
+          size="small"
+          icon={<FastfoodIcon />}
+          label="Science"
+          variant={category === "Science" ? "filled" : "outlined"}
+          onClick={(e) => setCategory(e.target.innerText)}
+        />
+        <Chip
+          size="small"
+          icon={<FastfoodIcon />}
+          label="News"
+          variant={category === "News" ? "filled" : "outlined"}
+          onClick={(e) => setCategory(e.target.innerText)}
+        />
+        <Chip
+          size="small"
+          icon={<FastfoodIcon />}
+          label="Politics"
+          variant={category === "Politics" ? "filled" : "outlined"}
           onClick={(e) => setCategory(e.target.innerText)}
         />
       </Box>

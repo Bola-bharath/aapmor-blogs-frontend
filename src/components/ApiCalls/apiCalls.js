@@ -7,6 +7,7 @@ import {
   createBlogApiUrl,
   saveBlogsApiUrl,
   profileUpdateApiUrl,
+  publishBlogApiUrl,
 } from "../Url/configUrls";
 import Cookies from "js-cookie";
 const token = Cookies.get("jwtToken");
@@ -31,7 +32,7 @@ export const submitRegisterApi = async (userDetails) => {
   return response;
 };
 export const createBlogApi = async (blogDetails) => {
-  const jwtToken = Cookies.get("jwt_token");
+  const jwtToken = Cookies.get("jwtToken");
   const options = {
     method: "POST",
     headers: {
@@ -40,7 +41,7 @@ export const createBlogApi = async (blogDetails) => {
     },
     body: JSON.stringify(blogDetails),
   };
-  const response = await fetch(createBlogApi, options);
+  const response = await fetch(createBlogApiUrl, options);
   return response;
 };
 export const getBlogsApi = async (category) => {
@@ -96,5 +97,9 @@ export const commentsApi = async (commentObject) => {
     data: commentObject,
   };
   const response = await axios(config);
+  return response;
+};
+export const publishBlogApi = async (publishDetails) => {
+  const response = await axios.post(publishBlogApiUrl, publishDetails);
   return response;
 };
