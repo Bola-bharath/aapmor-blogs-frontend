@@ -8,6 +8,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Fab,
+  IconButton,
   Tooltip,
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
@@ -70,6 +72,9 @@ const CreateBlog = () => {
       };
     });
   }
+  const renderTextInput = () => {};
+  const renderHeadingInput = () => {};
+  const renderImageInput = () => {};
 
   const submitPost = async () => {
     const blogDetails = {
@@ -122,12 +127,12 @@ const CreateBlog = () => {
               placeholder="Enter blog title"
               label="Title"
               onChange={(e) => setTitle(e.target.value)}
+              margin="normal"
               sx={{ width: "50%" }}
-              variant="standard"
             />
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} alignItems="center">
               <Box sx={{ minWidth: 200 }}>
-                <FormControl fullWidth variant="standard">
+                <FormControl fullWidth variant="filled">
                   <InputLabel>Category</InputLabel>
                   <Select
                     value={category}
