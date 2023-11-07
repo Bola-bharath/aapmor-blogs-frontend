@@ -101,6 +101,9 @@ export const commentsApi = async (commentObject) => {
 };
 
 export const publishBlogApi = async (htmlContent) => {
-  const response = await axios.post(publishBlogApiUrl, htmlContent);
+  const requestData = {
+    htmlContent: htmlContent,
+  };
+  const response = await axios.post(publishBlogApiUrl, requestData);
   return response;
 };
