@@ -74,7 +74,8 @@ const Home = (props) => {
     };
     const response = await profileUpdateApi(profileDetails);
     if (response.status === 200) {
-      Cookies.set("name", name, { expires: 10 });
+      Cookies.set("userDetail", { name, designation }, { expires: 10 });
+
       setProfile(false);
       alert("Profile details updated successfully");
     }
@@ -111,7 +112,6 @@ const Home = (props) => {
 
   useEffect(() => {
     setApiStatus("INITIAL");
-    console.log("getting blogs");
     getBlogsData();
   }, [category]);
 

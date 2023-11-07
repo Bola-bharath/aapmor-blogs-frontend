@@ -32,7 +32,7 @@ export const submitRegisterApi = async (userDetails) => {
   return response;
 };
 export const createBlogApi = async (blogDetails) => {
-  const jwtToken = Cookies.get("jwt_token");
+  const jwtToken = Cookies.get("jwtToken");
   const options = {
     method: "POST",
     headers: {
