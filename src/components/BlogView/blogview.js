@@ -54,8 +54,10 @@ const BlogView = () => {
 
   const handleLikes = async () => {
     const response = await likesApi({ id });
+    console.log(response);
     if (response.status === 200) {
-      const likes = response.data.likes;
+      // const likes = response.data.likes;
+
       getBlogItem();
     }
   };
@@ -212,7 +214,10 @@ const BlogView = () => {
           {/* Comments and likes*/}
           <Stack direction={"row"} spacing={4} mt={2}>
             <Stack direction={"column"} alignItems={"center"}>
-              <IconButton onClick={handleLikes}>
+              <IconButton
+                onClick={handleLikes}
+                sx={{ marginTop: 0, padding: 0 }}
+              >
                 <ThumbUpOutlinedIcon />
               </IconButton>
               <Typography>{likes} </Typography>
