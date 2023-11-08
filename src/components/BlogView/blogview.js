@@ -36,9 +36,6 @@ const BlogView = () => {
   const dateObject = new Date();
 
   const handleCommentApi = async () => {
-    if (comment === "") {
-      alert("Please enter a comment and submit");
-    }
     const commentObject = { comment, id, name, dateObject };
     const response = await commentsApi(commentObject);
     console.log(response);
@@ -56,8 +53,6 @@ const BlogView = () => {
     const response = await likesApi({ id });
     console.log(response);
     if (response.status === 200) {
-      // const likes = response.data.likes;
-
       getBlogItem();
     }
   };
@@ -75,6 +70,7 @@ const BlogView = () => {
 
   const { category, comments, date, likes, title, html, username } =
     blogDetails;
+
   const commentsArray = comments === null ? [] : comments;
 
   const renderLoading = () => {
@@ -291,7 +287,7 @@ const BlogView = () => {
 
             <Divider sx={{ mt: 1 }} />
 
-            {commentsArray.length >= 1
+            {commentsArray.length > 0
               ? renderComments()
               : renderNoCommentsView()}
             {/* Comments box */}

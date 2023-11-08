@@ -86,7 +86,7 @@ const CreateBlog = () => {
       category,
       date: dateObject,
       likes: 0,
-      comments: "",
+      comments: [],
       htmlFile: editorHtml,
     };
 
