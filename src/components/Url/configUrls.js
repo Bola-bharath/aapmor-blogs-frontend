@@ -5,4 +5,5 @@ export const loginApiUrl = "http://192.168.0.103:3005/api/login";
 export const createBlogApiUrl = "http://localhost:3005/blogs/";
 export const saveBlogsApiUrl = "http://localhost:3005/blogs/savedblogs/";
 export const profileUpdateApiUrl = "http://localhost:3005/profile";
-export const publishBlogApiUrl = "http://1localhost:3005/usermail";
+export const publishBlogApiUrl = "http://localhost:3005/usermail";
+export const likesApiUrl = "http://localhost:3005/likes";

@@ -5,6 +5,7 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  IconButton,
   Stack,
   TextField,
   Typography,
@@ -18,7 +19,7 @@ import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import Footer from "../HomePage/footer";
-import { commentsApi } from "../ApiCalls/apiCalls";
+import { commentsApi, likesApi } from "../ApiCalls/apiCalls";
 import Cookies from "js-cookie";
 
 const BlogView = () => {
@@ -50,6 +51,14 @@ const BlogView = () => {
   useEffect(() => {
     getBlogItem();
   }, []);
+
+  const handleLikes = async () => {
+    const response = await likesApi({ id });
+    if (response.status === 200) {
+      const likes = response.data.likes;
+      getBlogItem();
+    }
+  };
 
   const getBlogItem = async () => {
     const response = await axios.get(`http://localhost:3005/blogs/${id}`);
@@ -203,7 +212,9 @@ const BlogView = () => {
           {/* Comments and likes*/}
           <Stack direction={"row"} spacing={4} mt={2}>
             <Stack direction={"column"} alignItems={"center"}>
-              <ThumbUpOutlinedIcon />
+              <IconButton onClick={handleLikes}>
+                <ThumbUpOutlinedIcon />
+              </IconButton>
               <Typography>{likes} </Typography>
             </Stack>
             <Stack direction={"column"} alignItems={"center"} mt={2}>

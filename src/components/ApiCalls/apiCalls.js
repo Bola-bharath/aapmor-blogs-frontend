@@ -8,6 +8,7 @@ import {
   saveBlogsApiUrl,
   profileUpdateApiUrl,
   publishBlogApiUrl,
+  likesApiUrl,
 } from "../Url/configUrls";
 import Cookies from "js-cookie";
 const token = Cookies.get("jwtToken");
@@ -102,5 +103,10 @@ export const publishBlogApi = async (htmlContent) => {
     htmlContent: htmlContent,
   };
   const response = await axios.post(publishBlogApiUrl, requestData);
+  return response;
+};
+
+export const likesApi = async (id) => {
+  const response = await axios.put(likesApiUrl, id);
   return response;
 };
