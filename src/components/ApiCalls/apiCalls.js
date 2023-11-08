@@ -98,11 +98,11 @@ export const commentsApi = async (commentObject) => {
   return response;
 };
 
-export const publishBlogApi = async (htmlContent) => {
-  const requestData = {
-    htmlContent: htmlContent,
-  };
-  const response = await axios.post(publishBlogApiUrl, requestData);
+export const publishBlogApi = async (content) => {
+  // const requestData = {
+  //   htmlContent: htmlContent,
+  // };
+  const response = await axios.post(publishBlogApiUrl, content);
   return response;
 };
 

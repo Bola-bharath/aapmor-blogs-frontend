@@ -14,14 +14,13 @@ import {
   Typography,
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
-import { useState, React, useEffect } from "react";
+import { useState, React } from "react";
 import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/navBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Cookies from "js-cookie";
-import htmlContentFunction from "../htmlModifier";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const name = Cookies.get("username");
@@ -51,23 +50,6 @@ const CreateBlog = () => {
   const handleChange = (html) => {
     setEditorHtml(html);
   };
-
-  const [htmlContent, setHtmlContent] = useState("");
-
-  useEffect(() => {
-    async function fetchHTMLFile() {
-      try {
-        const response = await fetch("../content.html");
-        console.log(response);
-        const html = await response.text();
-        setHtmlContent(html);
-      } catch (error) {
-        console.error("Error loading HTML file:", error);
-      }
-    }
-
-    fetchHTMLFile();
-  }, []);
 
   const newDate = new Date();
   const dateObject = `${newDate.getDate()} ${newDate.toLocaleString("default", {
@@ -110,11 +92,14 @@ const CreateBlog = () => {
 
     const response = await createBlogApi(blogDetails);
     if (response.status === 200) {
+      const data = await response.json();
+      var blogId = data.message;
       navigate("/");
     }
-    const content = { title, description, blogImage, dateObject };
-    htmlContentFunction(content);
-    await publishBlogApi(htmlContent);
+    const content = { title, description, blogImage, dateObject, blogId };
+    // htmlContentFunction(content);
+    // fetchHTMLFile();
+    await publishBlogApi(content);
   };
 
   return (
