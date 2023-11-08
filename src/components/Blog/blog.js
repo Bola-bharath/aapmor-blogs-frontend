@@ -47,6 +47,7 @@ const Blog = (blogDetails) => {
               ${blogImage}
             )`,
           backgroundSize: "cover",
+          backgroundPosition: "center",
           height: 120,
           display: "flex",
           flexDirection: "column",
