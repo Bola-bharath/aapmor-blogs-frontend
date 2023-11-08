@@ -105,7 +105,7 @@ const BlogView = () => {
                 bgcolor={"background.default"}
                 color={"text.primary"}
               >
-                <Avatar>{eachComment.name}</Avatar>
+                <Avatar>{eachComment.name[0].toUpperCase()}</Avatar>
                 <Stack direction={"column"} spacing={1}>
                   <Typography variant="inherit" color={"#000"} fontWeight={600}>
                     {eachComment.name}
