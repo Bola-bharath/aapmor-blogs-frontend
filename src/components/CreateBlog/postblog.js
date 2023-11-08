@@ -8,9 +8,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Fab,
-  IconButton,
   Tooltip,
+  Divider,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
 import { useState, React, useEffect } from "react";
@@ -21,8 +22,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Cookies from "js-cookie";
 import htmlContentFunction from "../htmlModifier";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const name = Cookies.get("name");
+const name = Cookies.get("username");
+const role = Cookies.get("userrole");
 
 const modules = {
   toolbar: {
@@ -57,7 +60,6 @@ const CreateBlog = () => {
         const response = await fetch("../content.html");
         console.log(response);
         const html = await response.text();
-        console.log(html);
         setHtmlContent(html);
       } catch (error) {
         console.error("Error loading HTML file:", error);
@@ -94,7 +96,8 @@ const CreateBlog = () => {
 
   const submitPost = async () => {
     const blogDetails = {
-      name,
+      username: name,
+      userrole: role,
       title,
       description,
       blogImage,
@@ -102,7 +105,7 @@ const CreateBlog = () => {
       date: dateObject,
       likes: 0,
       comments: "",
-      html: editorHtml,
+      htmlFile: editorHtml,
     };
 
     const response = await createBlogApi(blogDetails);
@@ -111,7 +114,7 @@ const CreateBlog = () => {
     }
     const content = { title, description, blogImage, dateObject };
     htmlContentFunction(content);
-    const publishBlogResponse = await publishBlogApi(htmlContent);
+    await publishBlogApi(htmlContent);
   };
 
   return (
@@ -136,18 +139,25 @@ const CreateBlog = () => {
               display: "flex",
               justifyContent: "space-evenly",
               alignItems: "flex-end",
+              backgroundColor: "#bfbfbf20",
+              pb: 1,
+              borderRadius: "6px",
+              boxSizing: "border-box",
+              border: "0.5px solid #bfbfbf",
+              marginTop: 2,
             }}
           >
             <TextField
-              placeholder="Enter blog title"
-              label="Title"
+              placeholder="Enter your blog title"
+              label="Blog title"
               onChange={(e) => setTitle(e.target.value)}
-              margin="normal"
               sx={{ width: "50%" }}
+              variant="standard"
             />
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Divider orientation="vertical" flexItem />
+            <Stack direction="row" spacing={1} alignItems="flex-end">
               <Box sx={{ minWidth: 200 }}>
-                <FormControl fullWidth variant="filled">
+                <FormControl fullWidth variant="standard">
                   <InputLabel>Category</InputLabel>
                   <Select
                     value={category}
@@ -183,15 +193,25 @@ const CreateBlog = () => {
               </Button>
             </Stack>
           </Box>
-          <Box sx={{ mt: 2 }}>
-            <Stack direction={"row"} spacing={2}>
+          <Box
+            sx={{
+              mt: 0.5,
+              backgroundColor: "#bfbfbf10",
+              padding: 2,
+              borderRadius: "6px",
+              border: "0.5px solid #bfbfbf",
+              boxSizing: "border-box",
+            }}
+          >
+            <Stack direction={"row"} spacing={4} alignItems={"flex-end"}>
               <TextField
                 variant="standard"
-                placeholder="Enter few lines about your blog*"
+                placeholder="Enter few lines about your blog"
                 fullWidth
                 required
                 onChange={(e) => setDescription(e.target.value)}
               />
+              <Divider orientation="vertical" flexItem />
               <Input
                 accept="image/*"
                 multiple
@@ -202,12 +222,52 @@ const CreateBlog = () => {
               />
               <Tooltip title="Insert thumbnail image for your blog">
                 <label htmlFor="imageFile">
-                  <Image />
+                  <Image sx={{ cursor: "pointer" }} />
                 </label>
               </Tooltip>
             </Stack>
           </Box>
           {/* EDITOR BOX*/}
+          {blogImage !== "" && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                boxSizing: "border-box",
+                backgroundColor: "#bfbfbf50",
+                width: "300px",
+                height: "200px",
+                mt: 1,
+                borderRadius: 2,
+                boxShadow: "0px 0px 10px 0px #00000050",
+              }}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                spacing={12}
+              >
+                <Typography variant="p" fontWeight={500}>
+                  Your blog thumbnail
+                </Typography>
+                <Tooltip title="click to remove thumbnail" placement="right">
+                  <IconButton onClick={() => setBlogImage("")}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+              <img
+                src={blogImage}
+                alt="thumbnail"
+                style={{
+                  width: "100%",
+                  height: "80%",
+                }}
+              />
+            </Box>
+          )}
           <Box
             sx={{
               width: "100%",

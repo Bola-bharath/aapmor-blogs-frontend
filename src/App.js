@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login.js";
 import Home from "./components/HomePage/home.js";
-import MyEditor from "./MyEditor.js";
 import { useSelector } from "react-redux";
 import BlogView from "./components/BlogView/blogview.js";
 import { ThemeProvider } from "@emotion/react";

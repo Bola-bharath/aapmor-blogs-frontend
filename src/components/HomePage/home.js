@@ -9,16 +9,14 @@ import {
   Divider,
   FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
   Modal,
   Select,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Chip, Grid } from "@mui/material";
-import styled from "@emotion/styled";
 import {
   getBlogsApi,
   profileCheckingApi,
@@ -27,14 +25,7 @@ import {
 import { setBlogsData } from "../Slices/blogSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import SaveIcon from "@mui/icons-material/Save";
-import LoadingButton from "@mui/lab/LoadingButton";
 import Cookies from "js-cookie";
-
-const ChipStyled = styled(Chip)((theme) => {
-  return {
-    cursor: "pointer",
-  };
-});
 
 const style = {
   position: "absolute",
@@ -60,11 +51,9 @@ const Home = (props) => {
   const [designation, setDesignation] = useState("Select");
   const [gender, setGender] = useState("Select");
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
   const email = Cookies.get("userEmail");
 
   const handleProfileUpdate = async () => {
-    setLoading(true);
     const profileDetails = {
       gender,
       designation,
@@ -74,8 +63,8 @@ const Home = (props) => {
     };
     const response = await profileUpdateApi(profileDetails);
     if (response.status === 200) {
-      Cookies.set("userDetail", { name, designation }, { expires: 10 });
-
+      Cookies.set("username", name, { expires: 10 });
+      Cookies.set("userrole", designation, { expires: 10 });
       setProfile(false);
       alert("Profile details updated successfully");
     }
@@ -97,7 +86,7 @@ const Home = (props) => {
     } else {
       setProfile(false);
     }
-  }, []);
+  }, [email]);
 
   //GET BLOGS API CALL
   const getBlogsData = async () => {

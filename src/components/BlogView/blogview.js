@@ -16,11 +16,12 @@ import Header from "../HomePage/navBar";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import Footer from "../HomePage/footer";
 import { commentsApi } from "../ApiCalls/apiCalls";
 import Cookies from "js-cookie";
 
-const BlogView = (props) => {
+const BlogView = () => {
   const [blogDetails, setBlogDetails] = useState({});
   const location = useLocation();
   const { pathname } = location;
@@ -30,10 +31,13 @@ const BlogView = (props) => {
   const [comment, setComment] = useState("");
 
   const token = Cookies.get("jwtToken");
-  const name = Cookies.get("name");
+  const name = Cookies.get("username");
   const dateObject = new Date();
 
   const handleCommentApi = async () => {
+    if (comment === "") {
+      alert("Please enter a comment and submit");
+    }
     const commentObject = { comment, id, name, dateObject };
     const response = await commentsApi(commentObject);
     console.log(response);
@@ -77,32 +81,41 @@ const BlogView = (props) => {
     );
   };
 
+  // RENDER EACH COMMENT
+
   const renderComments = () => {
     return (
       <Stack
         direction={"column"}
-        spacing={1}
+        spacing={0}
         bgcolor={"background.default"}
         color={"text.primary"}
       >
-        {comments.map((eachComment) => {
+        {commentsArray.map((eachComment) => {
           return (
-            <Stack
-              direction={"column"}
-              spacing={1}
-              sx={{
-                padding: 0.5,
-              }}
-              bgcolor={"background.default"}
-              color={"text.primary"}
-            >
-              <Typography variant="caption" color={"blue"}>
-                {eachComment.name}
-              </Typography>
+            <>
+              <Stack
+                key={eachComment._id}
+                direction={"row"}
+                spacing={2}
+                sx={{
+                  padding: 1,
+                  boxSizing: "border-box",
+                }}
+                bgcolor={"background.default"}
+                color={"text.primary"}
+              >
+                <Avatar>{eachComment.name}</Avatar>
+                <Stack direction={"column"} spacing={1}>
+                  <Typography variant="inherit" color={"#000"} fontWeight={600}>
+                    {eachComment.name}
+                  </Typography>
 
-              <Typography variant="body1">{eachComment.comment}</Typography>
+                  <Typography variant="body2">{eachComment.comment}</Typography>
+                </Stack>
+              </Stack>
               <Divider orientation="horizontal" flexItem />
-            </Stack>
+            </>
           );
         })}
       </Stack>
@@ -123,7 +136,9 @@ const BlogView = (props) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: "75%",
+          justifyContent: "center",
+          alignItems: "space-around",
+
           marginBottom: 4,
         }}
       >
@@ -132,7 +147,7 @@ const BlogView = (props) => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "flex-start",
+            alignItems: "center",
             padding: 4,
             boxSizing: "border-box",
           }}
@@ -142,8 +157,6 @@ const BlogView = (props) => {
             size="small"
             color="primary"
             sx={{
-              justifySelf: "flex-start",
-              alignSelf: "flex-start",
               fontSize: "12px",
               color: "#ffffff",
               padding: 1,
@@ -187,7 +200,7 @@ const BlogView = (props) => {
           ></Box>
 
           <Divider orientation="horizontal" flexItem sx={{ mt: 3 }} />
-          {/* Comments */}
+          {/* Comments and likes*/}
           <Stack direction={"row"} spacing={4} mt={2}>
             <Stack direction={"column"} alignItems={"center"}>
               <ThumbUpOutlinedIcon />
@@ -195,7 +208,7 @@ const BlogView = (props) => {
             </Stack>
             <Stack direction={"column"} alignItems={"center"} mt={2}>
               <InsertCommentOutlinedIcon />
-              <Typography>{comments.length} </Typography>
+              <Typography>{commentsArray.length} </Typography>
             </Stack>
           </Stack>
         </Box>
@@ -214,30 +227,58 @@ const BlogView = (props) => {
               </Typography>
             </Stack>
             <Divider orientation="horizontal" flexItem />
+            {token && (
+              <Box
+                sx={{
+                  backgroundColor: "#bfbfbf20",
+                  borderRadius: 2,
+                  padding: 1,
+                  boxSizing: "border-box",
+                  mt: 1,
+                }}
+              >
+                <Stack direction={"row"} spacing={3} sx={{ mt: 1 }}>
+                  <Avatar>{name[0].toUpperCase()}</Avatar>
+                  <Stack
+                    direction={"column"}
+                    alignItems={"flex-end"}
+                    spacing={1}
+                    sx={{ width: "100%" }}
+                  >
+                    <TextField
+                      placeholder="Add a comment"
+                      sx={{
+                        fontSize: "10px",
+                        backgroundColor: "#fff",
+                        paddingLeft: 1,
+                        paddingTop: 1,
+                      }}
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      variant="standard"
+                      multiline
+                      rows={2}
+                      fullWidth
+                    />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={handleCommentApi}
+                      endIcon={<SendOutlinedIcon />}
+                    >
+                      Send
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Box>
+            )}
+
+            <Divider sx={{ mt: 1 }} />
+
             {commentsArray.length >= 1
               ? renderComments()
               : renderNoCommentsView()}
             {/* Comments box */}
-            {token && (
-              <Box>
-                <Stack direction={"row"} spacing={1} sx={{ mt: 1 }}>
-                  <TextField
-                    size="small"
-                    placeholder="Enter new comment"
-                    sx={{ fontSize: "10px" }}
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                  />
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleCommentApi}
-                  >
-                    Comment
-                  </Button>
-                </Stack>
-              </Box>
-            )}
           </Box>
         </Box>
       </Box>

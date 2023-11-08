@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import {
-  Grid,
   Paper,
   TextField,
   Button,
@@ -13,9 +12,6 @@ import {
 } from "@mui/material";
 import { sendOtpApi, loginValidation } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
-import { schema } from "../Validations/userValidations";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 //MAIN FUNCTION
 const Login = () => {
@@ -28,16 +24,9 @@ const Login = () => {
   const [showOtpView, setShowOtpView] = useState(false);
   const [showEmailView, setShowEmailView] = useState(true);
   const [otp, setOtp] = useState("");
-  const [responseOtp, setResponseOtp] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isButtonDisable, setButtonDisable] = useState(true);
   const [isOtpButtonDisable, setOtpButtonDisable] = useState(true);
-
-  const {
-    register,
-    // handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
 
   //CHECKING FOR ALREADY REGISTERED USER AND NAVIGATING TO HOME
   const navigate = useNavigate();

@@ -80,17 +80,14 @@ export const profileCheckingApi = async (emailObj) => {
     body: JSON.stringify(emailObj),
   };
 
-  const response = await fetch(
-    "http://192.168.0.103:3005/profile/check",
-    options
-  );
+  const response = await fetch("http://localhost:3005/profile/check", options);
 
   return response;
 };
 export const commentsApi = async (commentObject) => {
   const config = {
     method: "post",
-    url: "http://192.168.0.103:3005/comments",
+    url: "http://localhost:3005/comments",
     headers: {
       Authorization: `Bearer ${token}`,
     },

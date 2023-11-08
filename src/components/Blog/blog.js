@@ -1,12 +1,6 @@
 import {
-  Avatar,
   Box,
-  Button,
   Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  CardMedia,
   Chip,
   Divider,
   IconButton,
@@ -14,23 +8,18 @@ import {
   Typography,
 } from "@mui/material";
 
-import { saveBlogsApi } from "../ApiCalls/apiCalls";
-
-import Cookies from "js-cookie";
 import React from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
-import { setBlogViewObj } from "../Slices/blogSlice";
 
 const Blog = (blogDetails) => {
   const navigate = useNavigate();
   const {
     category,
-    comments,
+
     date,
     description,
-    images,
-    likes,
+
     title,
     username,
     userrole,
