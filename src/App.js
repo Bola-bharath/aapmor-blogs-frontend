@@ -11,21 +11,20 @@ import CreateBlog from "./components/CreateBlog/postblog.js";
 import Test from "./testing.js";
 
 const App = () => {
-  const themObj = useSelector((state) => state.navbar);
-  const darkTheme = createTheme({
-    palette: {
-      mode: themObj.mode,
-      palette: {
-        primary: indigo,
-        secondary: {
-          main: "#0d47a1",
-        },
-      },
-    },
-  });
+  // const themObj = useSelector((state) => state.navbar);
+  // const darkTheme = createTheme({
+  //   palette: {
+  //     mode: themObj.mode,
+  //     palette: {
+  //       primary: indigo,
+  //       secondary: {
+  //         main: "#0d47a1",
+  //       },
+  //     },
+  //   },
+  // });
   return (
     <ThemeProvider theme={darkTheme}>
-      {/* <Test /> */}
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
