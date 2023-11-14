@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   registerApiUrl,
   // updatePassUrl,
@@ -10,6 +9,7 @@ import {
   publishBlogApiUrl,
   likesApiUrl,
 } from "../Url/configUrls";
+import axios from "axios";
 import Cookies from "js-cookie";
 const token = Cookies.get("jwtToken");
 
@@ -82,6 +82,7 @@ export const profileCheckingApi = async (emailObj) => {
   };
 
   const response = await fetch("http://localhost:3005/profile/check", options);
+  console.log(response);
 
   return response;
 };

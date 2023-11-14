@@ -8,6 +8,7 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { indigo } from "@mui/material/colors";
 import CreateBlog from "./components/CreateBlog/postblog.js";
+import Test from "./testing.js";
 
 const App = () => {
   const themObj = useSelector((state) => state.navbar);
@@ -24,6 +25,7 @@ const App = () => {
   });
   return (
     <ThemeProvider theme={darkTheme}>
+      <Test />
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />

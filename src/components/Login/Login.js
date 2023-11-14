@@ -142,7 +142,7 @@ const Login = () => {
           borderTopRightRadius: "60px",
           borderBottomLeftRadius: "60px",
           height: { xs: "70%", lg: "80%" },
-          width: { xs: "100%", sm: "80%", md: "70%", lg: "50%" },
+          width: { xs: "100%", sm: "80%", md: "70%", lg: "40%" },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -169,10 +169,12 @@ const Login = () => {
           </Typography>
         </Stack>
         <Typography
+          mt={-3}
           variant="body2"
           textAlign={"center"}
           width={400}
           color={"grey"}
+          gutterBottom
         >
           Explore, engage, and be inspired. Dive into a world of captivating
           content. Let's get started!
@@ -198,7 +200,7 @@ const Login = () => {
             value={email}
             sx={{
               width: { xs: "90%", lg: "60%" },
-              marginBottom: { xs: "30px", lg: "0px" },
+              marginBottom: { xs: "30px", lg: "24px" },
               animation: emailError ? "shake 0.3s" : "",
               "@keyframes shake": {
                 "0%": { marginLeft: "0rem" },
@@ -220,8 +222,8 @@ const Login = () => {
             value={otp}
             onChange={(event) => setOtp(event.target.value)}
             sx={{
-              width: { xs: "90%", lg: "60%" },
-              marginBottom: { xs: "30px", lg: "0px" },
+              width: { xs: "80%", lg: "60%" },
+              marginBottom: { xs: "30px", lg: "24px" },
             }}
           />
         )}
@@ -234,7 +236,6 @@ const Login = () => {
             sx={{
               width: { xs: "90%", lg: "60%" },
               height: "48px",
-              marginBottom: { xs: "30px", lg: "0px" },
               fontWeight: 500,
             }}
           >
