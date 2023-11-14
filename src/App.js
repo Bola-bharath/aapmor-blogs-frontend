@@ -25,7 +25,7 @@ const App = () => {
   });
   return (
     <ThemeProvider theme={darkTheme}>
-      <Test />
+      {/* <Test /> */}
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
