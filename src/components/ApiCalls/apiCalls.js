@@ -1,6 +1,6 @@
+import Cookies from "js-cookie";
 import {
   registerApiUrl,
-  // updatePassUrl,
   forgetPassUrl,
   loginApiUrl,
   createBlogApiUrl,
@@ -10,7 +10,7 @@ import {
   likesApiUrl,
 } from "../Url/configUrls";
 import axios from "axios";
-import Cookies from "js-cookie";
+
 const token = Cookies.get("jwtToken");
 
 export const sendOtpApi = async (email) => {
@@ -19,11 +19,6 @@ export const sendOtpApi = async (email) => {
   return response;
 };
 
-/* export const updatePasswordApi = async ({ updatePassword, email }) => {
-  const response = await axios.put(updatePassUrl, { updatePassword, email });
-  return response;
-};
- */
 export const loginValidation = async (loginDetails) => {
   const response = await axios.post(loginApiUrl, loginDetails);
   return response;

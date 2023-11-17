@@ -23,7 +23,7 @@ const SideBar = ({ category, setCategory }) => {
     <Box
       sx={{
         width: "max-content",
-        maxWidth: "12%",
+        maxWidth: "13%",
         paddingLeft: 1,
         boxSizing: "border-box",
         display: { xs: "none", md: "flex", flexDirection: "column" },
@@ -137,7 +137,7 @@ const SideBar = ({ category, setCategory }) => {
         />
       </Box>
       <Divider orientation="horizontal" flexItem />
-      {jwtToken && (
+      {jwtToken ? (
         <Tooltip
           title="Create new blog "
           arrow
@@ -154,6 +154,10 @@ const SideBar = ({ category, setCategory }) => {
             Create
           </Fab>
         </Tooltip>
+      ) : (
+        <Typography variant="caption" color={"GrayText"}>
+          <a href="/login">Login</a> to create blog
+        </Typography>
       )}
     </Box>
   );

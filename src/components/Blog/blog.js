@@ -1,25 +1,27 @@
 import {
+  Avatar,
   Box,
   Card,
   Chip,
   Divider,
   IconButton,
-  Tooltip,
+  Stack,
   Typography,
 } from "@mui/material";
 
-import React from "react";
+import React, { useState } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import { useNavigate } from "react-router-dom";
 
 const Blog = (blogDetails) => {
   const navigate = useNavigate();
+  const [isBookmarked, setBookmark] = useState(false);
   const {
     category,
-
     date,
     description,
-
     title,
     username,
     userrole,
@@ -31,103 +33,197 @@ const Blog = (blogDetails) => {
     navigate(`/blogs/${_id}`);
   };
   return (
-    <Card
-      sx={{
-        height: "max-content",
-        width: 250,
-        "&:hover": {
-          transform: "scale(1.02)",
-          boxShadow: "0px 0px 10px 0px #00000050 ",
-        },
-      }}
-    >
-      <Box
+    <>
+      <Card
         sx={{
-          backgroundImage: `url(
-              ${blogImage}
-            )`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: 120,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <Chip
-          label={category}
-          size="small"
-          sx={{
-            justifySelf: "flex-start",
-            alignSelf: "flex-end",
-            m: "4px 4px 0px 0px",
-            backgroundColor: "#00000090",
-            fontSize: "10px",
-            color: "#ffffff",
-          }}
-        />
-        <Box
-          sx={{
-            background: "linear-gradient(to top, #000000, #00000002 )",
-            paddingLeft: 1,
-            boxSizing: "border-box",
-          }}
-        >
-          <Typography variant="subtitle2" color={"#ffffff"}>
-            {username}
-          </Typography>
-          <Typography
-            variant="caption"
-            color={"lightgray"}
-            sx={{ display: "flow" }}
-          >
-            {userrole}
-          </Typography>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          pl: 1,
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          minHeight: 100,
-        }}
-      >
-        <Typography variant="caption" color={"grey"} fontSize={"10px"}>
-          Posted at {date}
-        </Typography>
-        <Typography variant="p" fontWeight={700}>
-          {title.slice(0, 50)}
-        </Typography>
-        <Typography variant="caption" color={"grey"}>
-          {description.slice(0, 60)}...
-        </Typography>
-      </Box>
-      <Divider flexItem orientation="horizontal" />
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: { xs: "none", sm: "block" },
           height: "max-content",
-          padding: "0px 10px",
-          alignSelf: "flex-end",
-          cursor: "pointer",
+          width: { xs: "100%", sm: 300, md: 250 },
           "&:hover": {
-            color: "#e65100",
+            transform: "scale(1.02)",
+            boxShadow: "0px 0px 10px 0px #00000050 ",
           },
         }}
       >
-        <Tooltip title="Click on arrow to read blog">
+        <Box
+          sx={{
+            backgroundImage: `url(
+              ${blogImage}
+            )`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: 120,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <Chip
+            label={category}
+            size="small"
+            sx={{
+              justifySelf: "flex-start",
+              alignSelf: "flex-end",
+              m: "4px 4px 0px 0px",
+              backgroundColor: "#00000090",
+              fontSize: "10px",
+              color: "#ffffff",
+            }}
+          />
+          <Box
+            sx={{
+              background: "linear-gradient(to top, #000000, #00000002 )",
+              paddingLeft: 1,
+              boxSizing: "border-box",
+            }}
+          >
+            <Typography variant="subtitle2" color={"#ffffff"}>
+              {username}
+            </Typography>
+            <Typography
+              variant="caption"
+              color={"lightgray"}
+              sx={{ display: "flow" }}
+            >
+              {userrole}
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            pl: 1,
+            boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 100,
+          }}
+        >
+          <Typography variant="caption" color={"grey"} fontSize={"10px"}>
+            Posted at {date}
+          </Typography>
+          <Typography variant="p" fontWeight={700}>
+            {title.slice(0, 50)}
+          </Typography>
+          <Typography variant="caption" color={"grey"}>
+            {description.slice(0, 60)}...
+          </Typography>
+        </Box>
+        <Divider flexItem orientation="horizontal" />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "max-content",
+            padding: "0px 10px",
+            alignSelf: "flex-end",
+            cursor: "pointer",
+            "&:hover": {
+              color: "#e65100",
+            },
+          }}
+          onClick={handleReadMore}
+        >
           <Typography variant="body2">Read more</Typography>
-        </Tooltip>
-        <IconButton onClick={handleReadMore}>
-          <ArrowForwardIcon />
-        </IconButton>
-      </Box>
-    </Card>
+          <IconButton>
+            <ArrowForwardIcon />
+          </IconButton>
+        </Box>
+      </Card>
+
+      {/* MobileView */}
+
+      <Card
+        sx={{
+          height: "160px",
+          borderRadius: 2,
+          border: "1px dotted #00000050",
+          display: { xs: "flex", sm: "none" },
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 1,
+        }}
+        onClick={handleReadMore}
+      >
+        <img
+          src={blogImage}
+          alt={title}
+          style={{
+            width: "30%",
+            height: "80%",
+            borderRadius: 4,
+            marginLeft: "10px",
+            boxShadow: "-1px -1px 10px 0px #bfbfbf",
+          }}
+        />
+        <Divider orientation="vertical" flexItem />
+        <Stack
+          direction={"column"}
+          spacing={1}
+          sx={{
+            padding: 1,
+            boxSizing: "border-box",
+            alignItems: "space-between",
+          }}
+        >
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            sx={{ width: "100%" }}
+          >
+            <Typography
+              variant="caption"
+              fontWeight={100}
+              fontSize={10}
+              color={"grey"}
+            >
+              Posted: {date}
+            </Typography>
+            <Chip
+              label={category}
+              size="small"
+              sx={{
+                justifySelf: "flex-end",
+                alignSelf: "flex-end",
+                m: "4px 4px 0px 0px",
+                backgroundColor: "#00000090",
+                fontSize: "10px",
+                color: "#ffffff",
+              }}
+            />
+          </Stack>
+
+          <Typography variant="body2" fontWeight={700}>
+            {title.slice(0, 50)}
+          </Typography>
+          <Stack direction={"row"} spacing={1} minWidth={"100%"}>
+            <Avatar sx={{ width: 22, height: 22 }} />
+            <Stack direction={"column"} spacing={0}>
+              <Typography variant="caption" fontWeight={500} minWidth={80}>
+                {username}
+              </Typography>
+              <Typography variant="caption" fontWeight={500} minWidth={80}>
+                {userrole}
+              </Typography>
+            </Stack>
+            {isBookmarked ? (
+              <IconButton
+                onClick={() => setBookmark(!isBookmarked)}
+                sx={{ justifySelf: "flex-end" }}
+              >
+                <BookmarkAddedIcon />
+              </IconButton>
+            ) : (
+              <IconButton onClick={() => setBookmark(!isBookmarked)}>
+                <BookmarkAddOutlinedIcon />
+              </IconButton>
+            )}
+          </Stack>
+        </Stack>
+      </Card>
+    </>
   );
 };
 

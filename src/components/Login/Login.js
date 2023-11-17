@@ -126,25 +126,24 @@ const Login = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
         backgroundColor: "#E4F4FF",
-        width: "100vw",
+        height: { xs: "100vh", md: "100vh" },
         boxSizing: "border-box",
-        margin: 0,
       }}
     >
       <Paper
-        elevation={5}
+        elevation={{ md: 5 }}
         component="form"
         onSubmit={onSubmitEmail}
         sx={{
-          borderRadius: "15px",
-          borderTopRightRadius: "60px",
-          borderBottomLeftRadius: "60px",
-          height: { xs: "70%", lg: "80%" },
+          borderRadius: { md: "15px" },
+          borderTopRightRadius: { md: "60px" },
+          borderBottomLeftRadius: { md: "60px" },
+          height: { xs: "100%", lg: "80%" },
           width: { xs: "100%", sm: "80%", md: "70%", lg: "40%" },
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
           padding: "20px",
         }}
@@ -231,6 +230,7 @@ const Login = () => {
         {showEmailView && (
           <Button
             type="submit"
+            data-testid="email input"
             variant="contained"
             disabled={isButtonDisable}
             sx={{
