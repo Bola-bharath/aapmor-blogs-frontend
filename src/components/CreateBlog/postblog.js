@@ -18,13 +18,58 @@ import { useState, React } from "react";
 import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/navBar";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
+import QuillResize from "quill-resize";
 import "react-quill/dist/quill.snow.css";
 import Cookies from "js-cookie";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { LoadingButton } from "@mui/lab";
+
+Quill.register("modules/resize", QuillResize);
 
 const name = Cookies.get("username");
 const role = Cookies.get("userrole");
+
+const CustomImageFormat = Quill.import("formats/image");
+
+class CustomImage extends CustomImageFormat {
+  static formats(domNode) {
+    return super.formats(domNode);
+  }
+
+  format(name, value) {
+    if (name === "image") {
+      console.log(name);
+      const currentAttributes = super.format(name, value);
+      const style = currentAttributes.style || {};
+      style.width = "80%"; // Adjust to '50%' if you want 50% width
+      style.height = "auto"; // Maintain the aspect ratio
+      console.log(currentAttributes);
+      return {
+        ...currentAttributes,
+        style,
+      };
+    }
+  }
+}
+
+Quill.register(CustomImage, true);
+
+const formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+];
 
 const modules = {
   toolbar: {
@@ -45,6 +90,7 @@ const CreateBlog = () => {
   const [description, setDescription] = useState("");
   const [blogImage, setBlogImage] = useState("");
   const [editorHtml, setEditorHtml] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const handleChange = (html) => {
@@ -77,6 +123,7 @@ const CreateBlog = () => {
   }
 
   const submitPost = async () => {
+    setLoading(true);
     const blogDetails = {
       username: name,
       userrole: role,
@@ -92,13 +139,12 @@ const CreateBlog = () => {
 
     const response = await createBlogApi(blogDetails);
     if (response.status === 200) {
+      setLoading(false);
       const data = await response.json();
       var blogId = data.message;
       navigate("/");
     }
     const content = { title, description, blogImage, dateObject, blogId };
-    // htmlContentFunction(content);
-    // fetchHTMLFile();
     await publishBlogApi(content);
   };
 
@@ -138,6 +184,7 @@ const CreateBlog = () => {
               onChange={(e) => setTitle(e.target.value)}
               sx={{ width: "50%" }}
               variant="standard"
+              required
             />
             <Divider orientation="vertical" flexItem />
             <Stack direction="row" spacing={1} alignItems="flex-end">
@@ -151,7 +198,6 @@ const CreateBlog = () => {
                     fullWidth
                     size="small"
                   >
-                    <MenuItem value={"All"}>All</MenuItem>
                     <MenuItem value={"Fitness"}>Fitness</MenuItem>
                     <MenuItem value={"Artificial Intelligence"}>
                       Artificial Intelligence
@@ -164,7 +210,8 @@ const CreateBlog = () => {
                     <MenuItem value={"Sports"}>Sports</MenuItem>
                     <MenuItem value={"Fashion"}>Fashion</MenuItem>
 
-                    <MenuItem value={"Food"}>Food</MenuItem>
+                    <MenuItem value={"Food & Health"}>Food & health</MenuItem>
+                    <MenuItem value={"Gaming"}>Gaming</MenuItem>
 
                     <MenuItem value={"Arts"}>Arts</MenuItem>
                   </Select>
@@ -173,9 +220,13 @@ const CreateBlog = () => {
               <Button variant="outlined" onClick={() => navigate("/")}>
                 Cancel
               </Button>
-              <Button variant="contained" onClick={submitPost}>
+              <LoadingButton
+                loading={loading}
+                variant="contained"
+                onClick={submitPost}
+              >
                 Publish
-              </Button>
+              </LoadingButton>
             </Stack>
           </Box>
           <Box
@@ -265,6 +316,7 @@ const CreateBlog = () => {
               value={editorHtml}
               onChange={handleChange}
               modules={modules}
+              formats={formats}
             />
           </Box>
         </Box>

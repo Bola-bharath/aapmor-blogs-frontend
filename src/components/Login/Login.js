@@ -126,25 +126,24 @@ const Login = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
         backgroundColor: "#E4F4FF",
-        width: "100vw",
+        height: { xs: "100vh", md: "100vh" },
         boxSizing: "border-box",
-        margin: 0,
       }}
     >
       <Paper
-        elevation={5}
+        elevation={{ md: 5 }}
         component="form"
         onSubmit={onSubmitEmail}
         sx={{
-          borderRadius: "15px",
-          borderTopRightRadius: "60px",
-          borderBottomLeftRadius: "60px",
-          height: { xs: "70%", lg: "80%" },
-          width: { xs: "100%", sm: "80%", md: "70%", lg: "50%" },
+          borderRadius: { md: "15px" },
+          borderTopRightRadius: { md: "60px" },
+          borderBottomLeftRadius: { md: "60px" },
+          height: { xs: "100%", lg: "80%" },
+          width: { xs: "100%", sm: "80%", md: "70%", lg: "40%" },
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
           padding: "20px",
         }}
@@ -169,10 +168,12 @@ const Login = () => {
           </Typography>
         </Stack>
         <Typography
+          mt={-3}
           variant="body2"
           textAlign={"center"}
           width={400}
           color={"grey"}
+          gutterBottom
         >
           Explore, engage, and be inspired. Dive into a world of captivating
           content. Let's get started!
@@ -198,7 +199,7 @@ const Login = () => {
             value={email}
             sx={{
               width: { xs: "90%", lg: "60%" },
-              marginBottom: { xs: "30px", lg: "0px" },
+              marginBottom: { xs: "30px", lg: "24px" },
               animation: emailError ? "shake 0.3s" : "",
               "@keyframes shake": {
                 "0%": { marginLeft: "0rem" },
@@ -220,8 +221,8 @@ const Login = () => {
             value={otp}
             onChange={(event) => setOtp(event.target.value)}
             sx={{
-              width: { xs: "90%", lg: "60%" },
-              marginBottom: { xs: "30px", lg: "0px" },
+              width: { xs: "80%", lg: "60%" },
+              marginBottom: { xs: "30px", lg: "24px" },
             }}
           />
         )}
@@ -229,12 +230,12 @@ const Login = () => {
         {showEmailView && (
           <Button
             type="submit"
+            data-testid="email input"
             variant="contained"
             disabled={isButtonDisable}
             sx={{
               width: { xs: "90%", lg: "60%" },
               height: "48px",
-              marginBottom: { xs: "30px", lg: "0px" },
               fontWeight: 500,
             }}
           >

@@ -52,6 +52,9 @@ const Home = (props) => {
   const [gender, setGender] = useState("Select");
   const [name, setName] = useState("");
   const email = Cookies.get("userEmail");
+  const user = Cookies.get("username");
+
+  const userName = user !== undefined ? user : "User";
 
   const handleProfileUpdate = async () => {
     const profileDetails = {
@@ -76,6 +79,7 @@ const Home = (props) => {
       const checkProfileDetails = async () => {
         const emailObj = { email };
         const response = await profileCheckingApi(emailObj);
+        console.log(response);
         if (response.status === 202) {
           setProfile(true);
         } else if (response.status === 200) {
@@ -120,25 +124,63 @@ const Home = (props) => {
     );
   };
 
+  const renderBlogsView = () =>
+    blogs.map((blogItem) => {
+      return <Blog blogDetails={blogItem} key={blogItem._id} />;
+    });
+
+  const renderNoBlogsView = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          color={"GrayText"}
+          sx={{ textAlign: "center", maxWidth: "40%" }}
+        >
+          There are no blogs in this category, please select other categories or{" "}
+          <a
+            style={{
+              fontStyle: "italic",
+              fontWeight: "700",
+              cursor: "pointer",
+              color: "Highlight",
+            }}
+            href="/"
+          >
+            load
+          </a>{" "}
+          all blogs
+        </Typography>
+      </Box>
+    );
+  };
+
   const renderSuccessView = () => {
     return (
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: { xs: "column", sm: "row", md: "row" },
+          width: { sm: "100vw" },
           flexWrap: "wrap",
           minHeight: "90vh",
           padding: "20px",
           boxSizing: "border-box",
-          justifyContent: "center",
         }}
-        bgcolor={"background.default"}
-        color={"text.primary"}
         gap={2}
       >
-        {blogs.map((blogItem) => {
-          return <Blog blogDetails={blogItem} key={blogItem._id} />;
-        })}
+        <Typography sx={{ display: { xs: "block", md: "none" } }} variant="h6">
+          Hello {userName}, Good Day!
+        </Typography>
+        {blogs.length > 0 ? renderBlogsView() : renderNoBlogsView()}
       </Box>
     );
   };

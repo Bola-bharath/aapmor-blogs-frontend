@@ -8,38 +8,49 @@ import {
   IconButton,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../HomePage/navBar";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import Footer from "../HomePage/footer";
 import { commentsApi, likesApi } from "../ApiCalls/apiCalls";
 import Cookies from "js-cookie";
+import { LoadingButton } from "@mui/lab";
 
 const BlogView = () => {
+  const navigate = useNavigate();
   const [blogDetails, setBlogDetails] = useState({});
+  const [saved, setSaved] = useState(false);
   const location = useLocation();
   const { pathname } = location;
   const path = pathname.split("/");
   const id = path[2];
   const [apiStatus, setApiStatus] = useState("INITIAL");
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const token = Cookies.get("jwtToken");
   const name = Cookies.get("username");
   const dateObject = new Date();
 
   const handleCommentApi = async () => {
+    setLoading(true);
     const commentObject = { comment, id, name, dateObject };
     const response = await commentsApi(commentObject);
     console.log(response);
     if (response.status === 200) {
+      setLoading(false);
       getBlogItem();
     }
     setComment("");
@@ -145,7 +156,6 @@ const BlogView = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "space-around",
-
           marginBottom: 4,
         }}
       >
@@ -153,9 +163,11 @@ const BlogView = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
             padding: 4,
+            paddingTop: 0,
+            maxWidth: "70%",
             boxSizing: "border-box",
           }}
         >
@@ -177,33 +189,35 @@ const BlogView = () => {
           <Box sx={{ display: "flex", gap: 1, pb: 1 }}>
             <Avatar>P</Avatar>
             <Stack direction={"column"} spacing={0}>
-              <Stack
-                direction={"row"}
-                spacing={1}
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                <Typography variant="p">{username}</Typography>
-                <Typography variant="caption">Follow</Typography>
-              </Stack>
+              <Typography variant="p">{username}</Typography>
               <Stack direction={"row"} spacing={2}>
                 <Typography variant="caption" color={"darkgray"}>
                   Created on {date}
                 </Typography>
-                <Typography variant="caption" color={"#00000060"}>
-                  5 min read.
-                </Typography>
-                <Typography variant="caption" color={"#00000080"}>
-                  3K people read this
-                </Typography>
               </Stack>
             </Stack>
+            {saved ? (
+              <Tooltip title="Remove from saved blogs">
+                <IconButton onClick={() => setSaved(!saved)}>
+                  <BookmarkAddedIcon color="primary" />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Add to saved blogs">
+                <IconButton onClick={() => setSaved(!saved)}>
+                  <BookmarkAddOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
+
           <Divider orientation="horizontal" flexItem />
+
           {/* HTML FILE */}
 
           <Box
             dangerouslySetInnerHTML={{ __html: html }}
-            sx={{ width: "75%", maxWidth: "75%" }}
+            sx={{ width: "70%" }}
           ></Box>
 
           <Divider orientation="horizontal" flexItem sx={{ mt: 3 }} />
@@ -229,6 +243,7 @@ const BlogView = () => {
           sx={{
             paddingLeft: 4,
             backgroundColor: "#fff",
+            width: "50%",
           }}
         >
           <Box>
@@ -272,14 +287,15 @@ const BlogView = () => {
                       rows={2}
                       fullWidth
                     />
-                    <Button
+                    <LoadingButton
                       variant="contained"
+                      loading={loading}
                       size="small"
                       onClick={handleCommentApi}
                       endIcon={<SendOutlinedIcon />}
                     >
                       Send
-                    </Button>
+                    </LoadingButton>
                   </Stack>
                 </Stack>
               </Box>
@@ -315,6 +331,14 @@ const BlogView = () => {
   return (
     <>
       <Header />
+      <IconButton
+        sx={{ pl: 2, pt: 2 }}
+        size="small"
+        onClick={() => navigate("/")}
+      >
+        <ArrowBackIosIcon />
+      </IconButton>
+
       {renderBlogDetails()}
       <Footer />
     </>

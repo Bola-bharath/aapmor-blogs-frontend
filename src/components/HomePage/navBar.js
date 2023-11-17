@@ -38,6 +38,8 @@ const Header = () => {
 
   const handleLogout = () => {
     Cookies.remove("jwtToken");
+    Cookies.remove("username");
+    Cookies.remove("userrole");
     navigate("/login");
   };
 
@@ -227,7 +229,7 @@ const Header = () => {
               Your Blogs
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>
