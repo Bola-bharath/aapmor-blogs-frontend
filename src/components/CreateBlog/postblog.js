@@ -17,7 +17,7 @@ import { Image } from "@mui/icons-material";
 import { useState, React } from "react";
 import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
-import Header from "../HomePage/navBar";
+import Header from "../HomePage/header";
 import ReactQuill, { Quill } from "react-quill";
 import QuillResize from "quill-resize";
 import "react-quill/dist/quill.snow.css";

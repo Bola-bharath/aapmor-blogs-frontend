@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Chip,
   CircularProgress,
   Divider,
@@ -14,12 +13,11 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../HomePage/navBar";
+import Header from "../HomePage/header";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
@@ -40,9 +38,27 @@ const BlogView = () => {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    getBlogItem();
+  }, []);
+
   const token = Cookies.get("jwtToken");
   const name = Cookies.get("username");
   const dateObject = new Date();
+
+  /*   var dateObject = new Date();
+  var datetime =
+    dateObject.getDay() +
+    "/" +
+    dateObject.getMonth() +
+    "/" +
+    dateObject.getFullYear() +
+    " @ " +
+    dateObject.getHours() +
+    ":" +
+    dateObject.getMinutes() +
+    ":" +
+    dateObject.getSeconds(); */
 
   const handleCommentApi = async () => {
     setLoading(true);
@@ -55,10 +71,6 @@ const BlogView = () => {
     }
     setComment("");
   };
-
-  useEffect(() => {
-    getBlogItem();
-  }, []);
 
   const handleLikes = async () => {
     const response = await likesApi({ id });
@@ -79,10 +91,8 @@ const BlogView = () => {
     }
   };
 
-  const { category, comments, date, likes, title, html, username } =
+  const { category, comments, date, likes, title, html, username, _id } =
     blogDetails;
-
-  const commentsArray = comments === null ? [] : comments;
 
   const renderLoading = () => {
     return (
@@ -99,17 +109,49 @@ const BlogView = () => {
     );
   };
 
+  // time difference
+  const getTimeAgo = (dateObject) => {
+    const currentDate = new Date();
+    const date = new Date(dateObject);
+    const timeDifference = currentDate - date;
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return days + " days ago";
+    } else if (hours > 0) {
+      return hours + " hours ago";
+    } else if (minutes > 0) {
+      return minutes + " minutes ago";
+    } else {
+      return seconds + " seconds ago";
+    }
+  };
+
+  // SAVE BLOG TO USER SAVED
+
+  const handleBlogSave = async () => {
+    const { _id } = blogDetails;
+    const response = await axios.post("http://localhost:3005/saveblog", {
+      id: "6544e43cfd56f758e8f07ca7",
+      blogId: _id,
+    });
+    if (response.status === 200) {
+      console.log(response);
+      setSaved(!saved);
+    }
+  };
+
   // RENDER EACH COMMENT
 
   const renderComments = () => {
     return (
-      <Stack
-        direction={"column"}
-        spacing={0}
-        bgcolor={"background.default"}
-        color={"text.primary"}
-      >
-        {commentsArray.map((eachComment) => {
+      <Stack direction={"column"} spacing={0}>
+        {comments.map((eachComment) => {
+          const { comment, name, dateObject } = eachComment;
+          const time = getTimeAgo(dateObject);
           return (
             <>
               <Stack
@@ -120,16 +162,27 @@ const BlogView = () => {
                   padding: 1,
                   boxSizing: "border-box",
                 }}
-                bgcolor={"background.default"}
-                color={"text.primary"}
               >
-                <Avatar>{eachComment.name[0].toUpperCase()}</Avatar>
+                <Avatar>{name[0].toUpperCase()}</Avatar>
                 <Stack direction={"column"} spacing={1}>
                   <Typography variant="inherit" color={"#000"} fontWeight={600}>
-                    {eachComment.name}
+                    {name}{" "}
+                    <text style={{ color: "grey", fontSize: "10px" }}>
+                      {"\u25CF"}
+                    </text>
+                    <span
+                      style={{
+                        fontWeight: "lighter",
+                        color: "lightslategray",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {" "}
+                      {time}
+                    </span>
                   </Typography>
 
-                  <Typography variant="body2">{eachComment.comment}</Typography>
+                  <Typography variant="body2">{comment}</Typography>
                 </Stack>
               </Stack>
               <Divider orientation="horizontal" flexItem />
@@ -149,6 +202,7 @@ const BlogView = () => {
   };
 
   const renderBLogView = () => {
+    const formattedDate = new Date(date).toDateString();
     return (
       <Box
         sx={{
@@ -192,7 +246,7 @@ const BlogView = () => {
               <Typography variant="p">{username}</Typography>
               <Stack direction={"row"} spacing={2}>
                 <Typography variant="caption" color={"darkgray"}>
-                  Created on {date}
+                  Created on {formattedDate}
                 </Typography>
               </Stack>
             </Stack>
@@ -204,7 +258,7 @@ const BlogView = () => {
               </Tooltip>
             ) : (
               <Tooltip title="Add to saved blogs">
-                <IconButton onClick={() => setSaved(!saved)}>
+                <IconButton onClick={handleBlogSave}>
                   <BookmarkAddOutlinedIcon />
                 </IconButton>
               </Tooltip>
@@ -234,7 +288,7 @@ const BlogView = () => {
             </Stack>
             <Stack direction={"column"} alignItems={"center"} mt={2}>
               <InsertCommentOutlinedIcon />
-              <Typography>{commentsArray.length} </Typography>
+              <Typography>{comments.length} </Typography>
             </Stack>
           </Stack>
         </Box>
@@ -303,9 +357,7 @@ const BlogView = () => {
 
             <Divider sx={{ mt: 1 }} />
 
-            {commentsArray.length > 0
-              ? renderComments()
-              : renderNoCommentsView()}
+            {comments.length > 0 ? renderComments() : renderNoCommentsView()}
             {/* Comments box */}
           </Box>
         </Box>
@@ -332,7 +384,12 @@ const BlogView = () => {
     <>
       <Header />
       <IconButton
-        sx={{ pl: 2, pt: 2 }}
+        sx={{
+          pl: 2,
+          pt: 2,
+          height: "12px",
+          width: "12px",
+        }}
         size="small"
         onClick={() => navigate("/")}
       >

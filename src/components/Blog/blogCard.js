@@ -28,12 +28,14 @@ const Blog = (blogDetails) => {
     _id,
     blogImage,
   } = blogDetails.blogDetails;
+  const formattedDate = new Date(date).toDateString();
 
   const handleReadMore = () => {
     navigate(`/blogs/${_id}`);
   };
   return (
     <>
+      {/* WEB VIEW */}
       <Card
         sx={{
           display: { xs: "none", sm: "block" },
@@ -68,6 +70,7 @@ const Blog = (blogDetails) => {
               backgroundColor: "#00000090",
               fontSize: "10px",
               color: "#ffffff",
+              border: "0.5px solid #ffffff",
             }}
           />
           <Box
@@ -82,7 +85,7 @@ const Blog = (blogDetails) => {
             </Typography>
             <Typography
               variant="caption"
-              color={"lightgray"}
+              color={"#ffffff"}
               sx={{ display: "flow" }}
             >
               {userrole}
@@ -92,14 +95,20 @@ const Blog = (blogDetails) => {
         <Box
           sx={{
             pl: 1,
+            pr: 1,
             boxSizing: "border-box",
             display: "flex",
             flexDirection: "column",
             minHeight: 100,
           }}
         >
-          <Typography variant="caption" color={"grey"} fontSize={"10px"}>
-            Posted at {date}
+          <Typography
+            variant="caption"
+            color={"darkgray"}
+            fontSize={"10px"}
+            mt={0.5}
+          >
+            Posted at {formattedDate}
           </Typography>
           <Typography variant="p" fontWeight={700}>
             {title.slice(0, 50)}
@@ -132,7 +141,7 @@ const Blog = (blogDetails) => {
         </Box>
       </Card>
 
-      {/* MobileView */}
+      {/* MOBILE VIEW */}
 
       <Card
         sx={{
@@ -179,7 +188,7 @@ const Blog = (blogDetails) => {
               fontSize={10}
               color={"grey"}
             >
-              Posted: {date}
+              Posted: {formattedDate}
             </Typography>
             <Chip
               label={category}
@@ -201,10 +210,10 @@ const Blog = (blogDetails) => {
           <Stack direction={"row"} spacing={1} minWidth={"100%"}>
             <Avatar sx={{ width: 22, height: 22 }} />
             <Stack direction={"column"} spacing={0}>
-              <Typography variant="caption" fontWeight={500} minWidth={80}>
+              <Typography variant="caption" fontSize={10}>
                 {username}
               </Typography>
-              <Typography variant="caption" fontWeight={500} minWidth={80}>
+              <Typography variant="caption" fontSize={10}>
                 {userrole}
               </Typography>
             </Stack>

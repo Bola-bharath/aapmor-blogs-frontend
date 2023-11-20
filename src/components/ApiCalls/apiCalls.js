@@ -77,7 +77,6 @@ export const profileCheckingApi = async (emailObj) => {
   };
 
   const response = await fetch("http://localhost:3005/profile/check", options);
-  console.log(response);
 
   return response;
 };

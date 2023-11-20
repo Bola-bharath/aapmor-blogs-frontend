@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Header from "./navBar";
+import Header from "./header";
 import Footer from "./footer";
-import Blog from "../Blog/blog";
+import Blog from "../Blog/blogCard";
 import SideBar from "../Sidebar/sideBar";
+import BottomNavbar from "../BottomNavigation/bottomNavigation";
 import {
   Button,
   CircularProgress,
@@ -15,6 +16,8 @@ import {
   TextField,
   Typography,
   Box,
+  Alert,
+  Backdrop,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -40,7 +43,7 @@ const style = {
   p: 2,
 };
 
-const Home = (props) => {
+const Home = () => {
   const dispatch = useDispatch();
   const [profile, setProfile] = useState(false);
   const [category, setCategory] = useState("All");
@@ -51,6 +54,9 @@ const Home = (props) => {
   const [designation, setDesignation] = useState("Select");
   const [gender, setGender] = useState("Select");
   const [name, setName] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const email = Cookies.get("userEmail");
   const user = Cookies.get("username");
 
@@ -65,11 +71,13 @@ const Home = (props) => {
       isProfileUpdated: true,
     };
     const response = await profileUpdateApi(profileDetails);
+    console.log(response);
     if (response.status === 200) {
-      Cookies.set("username", name, { expires: 10 });
-      Cookies.set("userrole", designation, { expires: 10 });
+      Cookies.set("username", name, { expires: 30 });
+      Cookies.set("userrole", designation, { expires: 30 });
+      setAlertMessage(response.data.message);
       setProfile(false);
-      alert("Profile details updated successfully");
+      setShowAlert(true);
     }
   };
 
@@ -79,7 +87,6 @@ const Home = (props) => {
       const checkProfileDetails = async () => {
         const emailObj = { email };
         const response = await profileCheckingApi(emailObj);
-        console.log(response);
         if (response.status === 202) {
           setProfile(true);
         } else if (response.status === 200) {
@@ -306,12 +313,23 @@ const Home = (props) => {
   return (
     <>
       <Header />
+
       <Box sx={{ display: "flex" }}>
         <SideBar setCategory={setCategory} category={category} />
         {renderBlogsApi()}
       </Box>
+
       <Footer />
+
       {profile && showPopupProfile()}
+
+      <BottomNavbar />
+
+      <Backdrop open={showAlert} onClick={() => setShowAlert(false)}>
+        <Box sx={{ display: "fixed", top: "100px", bottom: "100px" }}>
+          <Alert severity="success">{alertMessage}</Alert>
+        </Box>
+      </Backdrop>
     </>
   );
 };

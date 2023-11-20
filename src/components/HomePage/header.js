@@ -88,13 +88,14 @@ const Header = () => {
           sx={{
             display: { xs: "none", sm: "flex" },
             alignItems: "center",
+            width: "30%",
             backgroundColor: "#ffffff95",
             pl: 1,
             pr: 1,
             borderRadius: 2,
           }}
         >
-          <InputBase placeholder="Search..." />
+          <InputBase type="search" placeholder="Search..." fullWidth />
           <SearchOutlined color="primary" sx={{ cursor: "pointer" }} />
         </Box>
         {/* WEB NAVIGATION AFTER LOGIN */}
@@ -118,7 +119,7 @@ const Header = () => {
               variant="text"
               color="inherit"
               disableElevation
-              href="/user/savedblogs"
+              href="/user/saved"
             >
               Saved
             </Button>
