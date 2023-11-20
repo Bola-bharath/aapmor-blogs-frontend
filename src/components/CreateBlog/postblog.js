@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
-import { useState, React } from "react";
+import { useState, React, useEffect } from "react";
 import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/header";
@@ -85,6 +85,7 @@ const modules = {
 };
 
 const CreateBlog = () => {
+  document.title = "Create New Blog";
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -135,6 +136,7 @@ const CreateBlog = () => {
       likes: 0,
       comments: [],
       htmlFile: editorHtml,
+      savedUsers: [],
     };
 
     const response = await createBlogApi(blogDetails);

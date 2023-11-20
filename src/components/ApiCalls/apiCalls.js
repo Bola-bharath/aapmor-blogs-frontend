@@ -8,6 +8,8 @@ import {
   profileUpdateApiUrl,
   publishBlogApiUrl,
   likesApiUrl,
+  saveBLogApiUrl,
+  getSavedBlogsApiUrl,
 } from "../Url/configUrls";
 import axios from "axios";
 
@@ -60,6 +62,7 @@ export const profileUpdateApi = async (profileDetails) => {
   return response;
 };
 
+//CHECKING PROFILE AFTER LOGIN API
 export const profileCheckingApi = async (emailObj) => {
   // const response = await axios.post(
   //   "http://192.168.0.103:3005/profile/check",
@@ -80,6 +83,8 @@ export const profileCheckingApi = async (emailObj) => {
 
   return response;
 };
+
+//COMMENTS API
 export const commentsApi = async (commentObject) => {
   const config = {
     method: "post",
@@ -93,6 +98,7 @@ export const commentsApi = async (commentObject) => {
   return response;
 };
 
+//PUBLISHING BLOG
 export const publishBlogApi = async (content) => {
   // const requestData = {
   //   htmlContent: htmlContent,
@@ -101,7 +107,49 @@ export const publishBlogApi = async (content) => {
   return response;
 };
 
+// LIKES API
 export const likesApi = async (id) => {
   const response = await axios.put(likesApiUrl, id);
+  return response;
+};
+
+//GET SAVED BLOGS API
+export const getSavedBlogsApi = async () => {
+  const config = {
+    method: "get",
+    url: getSavedBlogsApiUrl,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios(config);
+  return response;
+};
+
+//SAVING A BLOG API
+export const saveBlogApi = async (_id) => {
+  const config = {
+    method: "post",
+    url: saveBLogApiUrl,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: { _id },
+  };
+  const response = await axios(config);
+  return response;
+};
+
+//REMOVE BLOG FROM SAVED ARRAY API
+export const removeSaveBlogApi = async (_id) => {
+  const config = {
+    method: "put",
+    url: saveBLogApiUrl,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: { _id },
+  };
+  const response = await axios(config);
   return response;
 };

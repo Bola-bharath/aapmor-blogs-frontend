@@ -22,14 +22,18 @@ import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import Footer from "../HomePage/footer";
-import { commentsApi, likesApi } from "../ApiCalls/apiCalls";
+import {
+  commentsApi,
+  likesApi,
+  removeSaveBlogApi,
+  saveBlogApi,
+} from "../ApiCalls/apiCalls";
 import Cookies from "js-cookie";
 import { LoadingButton } from "@mui/lab";
 
 const BlogView = () => {
   const navigate = useNavigate();
   const [blogDetails, setBlogDetails] = useState({});
-  const [saved, setSaved] = useState(false);
   const location = useLocation();
   const { pathname } = location;
   const path = pathname.split("/");
@@ -44,6 +48,7 @@ const BlogView = () => {
 
   const token = Cookies.get("jwtToken");
   const name = Cookies.get("username");
+  const email = Cookies.get("userEmail");
   const dateObject = new Date();
 
   /*   var dateObject = new Date();
@@ -91,8 +96,17 @@ const BlogView = () => {
     }
   };
 
-  const { category, comments, date, likes, title, html, username, _id } =
-    blogDetails;
+  const {
+    category,
+    comments,
+    date,
+    likes,
+    title,
+    html,
+    username,
+    _id,
+    savedUsers,
+  } = blogDetails;
 
   const renderLoading = () => {
     return (
@@ -133,14 +147,16 @@ const BlogView = () => {
   // SAVE BLOG TO USER SAVED
 
   const handleBlogSave = async () => {
-    const { _id } = blogDetails;
-    const response = await axios.post("http://localhost:3005/saveblog", {
-      id: "6544e43cfd56f758e8f07ca7",
-      blogId: _id,
-    });
+    const response = await saveBlogApi(_id);
     if (response.status === 200) {
-      console.log(response);
-      setSaved(!saved);
+      getBlogItem();
+    }
+  };
+
+  const handleBlogUnsave = async () => {
+    const response = await removeSaveBlogApi(_id);
+    if (response.status === 200) {
+      getBlogItem();
     }
   };
 
@@ -192,7 +208,7 @@ const BlogView = () => {
       </Stack>
     );
   };
-
+  //RENDERING NO COMMENTS VIEW
   const renderNoCommentsView = () => {
     return (
       <Box sx={{}}>
@@ -201,7 +217,10 @@ const BlogView = () => {
     );
   };
 
+  //RENDERING BLOG VIEW
   const renderBLogView = () => {
+    document.title = `Blog: ${title}`;
+    const saved = savedUsers.includes(email) ? true : false;
     const formattedDate = new Date(date).toDateString();
     return (
       <Box
@@ -252,7 +271,7 @@ const BlogView = () => {
             </Stack>
             {saved ? (
               <Tooltip title="Remove from saved blogs">
-                <IconButton onClick={() => setSaved(!saved)}>
+                <IconButton onClick={handleBlogUnsave}>
                   <BookmarkAddedIcon color="primary" />
                 </IconButton>
               </Tooltip>

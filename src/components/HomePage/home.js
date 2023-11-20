@@ -111,6 +111,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    document.title = "AAPMOR | Blogs";
     setApiStatus("INITIAL");
     getBlogsData();
   }, [category]);
