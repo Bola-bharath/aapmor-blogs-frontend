@@ -47,7 +47,8 @@ const BlogView = () => {
   }, []);
 
   const token = Cookies.get("jwtToken");
-  const name = Cookies.get("username");
+  const cookiesName = Cookies.get("username");
+  const name = cookiesName !== undefined ? cookiesName : "U";
   const email = Cookies.get("userEmail");
   const dateObject = new Date();
 
