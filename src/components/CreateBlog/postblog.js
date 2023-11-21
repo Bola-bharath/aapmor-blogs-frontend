@@ -14,73 +14,45 @@ import {
   Typography,
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
-import { useState, React, useEffect } from "react";
+import { useState, React } from "react";
 import { createBlogApi, publishBlogApi } from "../ApiCalls/apiCalls";
 import { useNavigate } from "react-router-dom";
 import Header from "../HomePage/header";
 import ReactQuill, { Quill } from "react-quill";
-import QuillResize from "quill-resize";
+import ImageResize from "quill-image-resize-module-react";
+import BlotFormatter from "quill-blot-formatter";
+
 import "react-quill/dist/quill.snow.css";
 import Cookies from "js-cookie";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton } from "@mui/lab";
 
-Quill.register("modules/resize", QuillResize);
-
 const name = Cookies.get("username");
 const role = Cookies.get("userrole");
-
-const CustomImageFormat = Quill.import("formats/image");
-
-class CustomImage extends CustomImageFormat {
-  static formats(domNode) {
-    return super.formats(domNode);
-  }
-
-  format(name, value) {
-    if (name === "image") {
-      console.log(name);
-      const currentAttributes = super.format(name, value);
-      const style = currentAttributes.style || {};
-      style.width = "80%"; // Adjust to '50%' if you want 50% width
-      style.height = "auto"; // Maintain the aspect ratio
-      console.log(currentAttributes);
-      return {
-        ...currentAttributes,
-        style,
-      };
-    }
-  }
-}
-
-Quill.register(CustomImage, true);
-
-const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-];
+Quill.register("modules/imageResize", ImageResize);
+Quill.register("modules/blotFormatter", BlotFormatter);
 
 const modules = {
-  toolbar: {
-    container: [
-      [{ header: "1" }, { header: "2" }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image", "video"],
-      [{ align: [] }],
-      [{ color: [] }, { background: [] }],
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ size: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [
+      { list: "ordered" },
+      { list: "bullet" },
+      { indent: "-1" },
+      { indent: "+1" },
     ],
+    ["link", "image", "video"],
+    ["clean"],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+  imageResize: {
+    parchment: Quill.import("parchment"),
+    modules: ["Resize", "DisplaySize"],
   },
 };
 
@@ -318,7 +290,6 @@ const CreateBlog = () => {
               value={editorHtml}
               onChange={handleChange}
               modules={modules}
-              formats={formats}
             />
           </Box>
         </Box>
