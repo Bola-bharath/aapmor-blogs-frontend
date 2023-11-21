@@ -98,7 +98,9 @@ const Header = () => {
           <InputBase type="search" placeholder="Search..." fullWidth />
           <SearchOutlined color="primary" sx={{ cursor: "pointer" }} />
         </Box>
+
         {/* WEB NAVIGATION AFTER LOGIN */}
+
         {token !== undefined ? (
           <Box
             sx={{
@@ -161,6 +163,7 @@ const Header = () => {
         )}
 
         {/* MOBILE MENU ITEM */}
+
         <Box sx={{ display: { xs: "block", md: "none" } }}>
           <Tooltip title="Account settings">
             <IconButton
@@ -209,20 +212,6 @@ const Header = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              Profile
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <BookmarksIcon fontSize="small" />
-              </ListItemIcon>
-              Saved Blogs
-            </MenuItem>
-            <Divider />
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 <BookIcon fontSize="small" />

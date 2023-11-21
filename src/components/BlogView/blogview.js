@@ -240,7 +240,7 @@ const BlogView = () => {
             alignItems: "flex-start",
             padding: 4,
             paddingTop: 0,
-            maxWidth: "70%",
+            maxWidth: { md: "70%", xs: "100%", sm: "90%" },
             boxSizing: "border-box",
           }}
         >
@@ -269,18 +269,25 @@ const BlogView = () => {
                 </Typography>
               </Stack>
             </Stack>
-            {saved ? (
-              <Tooltip title="Remove from saved blogs">
-                <IconButton onClick={handleBlogUnsave}>
-                  <BookmarkAddedIcon color="primary" />
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Add to saved blogs">
-                <IconButton onClick={handleBlogSave}>
-                  <BookmarkAddOutlinedIcon />
-                </IconButton>
-              </Tooltip>
+
+            {/* SAVE OR UNSAVE ICON */}
+
+            {token !== undefined && (
+              <>
+                {saved ? (
+                  <Tooltip title="Remove from saved blogs">
+                    <IconButton onClick={handleBlogUnsave}>
+                      <BookmarkAddedIcon color="primary" />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Add to saved blogs">
+                    <IconButton onClick={handleBlogSave}>
+                      <BookmarkAddOutlinedIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </>
             )}
           </Box>
 
@@ -290,10 +297,11 @@ const BlogView = () => {
 
           <Box
             dangerouslySetInnerHTML={{ __html: html }}
-            sx={{ width: "70%" }}
+            sx={{ width: { md: "70%", xs: "100%", sm: "90%" } }}
           ></Box>
 
           <Divider orientation="horizontal" flexItem sx={{ mt: 3 }} />
+
           {/* Comments and likes*/}
           <Stack direction={"row"} spacing={4} mt={2}>
             <Stack direction={"column"} alignItems={"center"}>
@@ -311,12 +319,14 @@ const BlogView = () => {
             </Stack>
           </Stack>
         </Box>
+
         {/* Comments view */}
+
         <Box
           sx={{
             paddingLeft: 4,
             backgroundColor: "#fff",
-            width: "50%",
+            width: { md: "50%", xs: "80%", sm: "90%" },
           }}
         >
           <Box>

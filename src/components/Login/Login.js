@@ -41,6 +41,7 @@ const Login = () => {
   const handleOnSubmitError = (message) => {
     setShowErrMsg(true);
     setErrorMsg(message);
+    setSuccessMsg("");
   };
 
   useEffect(() => {
@@ -58,7 +59,6 @@ const Login = () => {
   // OTP ENTERED API CALL
   const handleOtpEntered = async () => {
     setButtonText("Validating...");
-
     const loginDetails = { email, otp };
     const response = await loginValidation(loginDetails);
     const data = response.data;
@@ -69,6 +69,7 @@ const Login = () => {
       Cookies.set("userEmail", data.email, { expires: 10 });
       navigate("/");
     } else {
+      setButtonText("Enter OTP");
       handleOnSubmitError(data.message);
     }
   };
@@ -80,6 +81,12 @@ const Login = () => {
   const handleEmailChange = (e) => {
     setEmailError(false);
     setEmail(e.target.value);
+  };
+
+  const handleOtpChange = (e) => {
+    setButtonText("Enter OTP");
+    setShowErrMsg(false);
+    setOtp(e.target.value);
   };
 
   useEffect(() => {
@@ -219,7 +226,7 @@ const Login = () => {
             label="OTP"
             placeholder="Enter OTP"
             value={otp}
-            onChange={(event) => setOtp(event.target.value)}
+            onChange={handleOtpChange}
             sx={{
               width: { xs: "80%", lg: "60%" },
               marginBottom: { xs: "30px", lg: "24px" },
